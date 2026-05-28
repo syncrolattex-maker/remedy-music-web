@@ -27,7 +27,6 @@ export interface Track {
   price: number;
   color: string;
   bandcampUrl?: string;
-  spotifyUrl?: string;
   tracks?: string[];
 }
 
