@@ -8,44 +8,7 @@ interface CheckoutProps {
   onNavigateHome: () => void;
 }
 
-interface InPostPoint {
-  id: string;
-  name: string;
-  address: string;
-  city: string;
-  postalCode: string;
-  type: 'locker' | 'punto_pack';
-}
 
-const mockInPostPoints = (postalCode: string): InPostPoint[] => {
-  const pCode = postalCode.trim() || '28001';
-  return [
-    {
-      id: `ESP${pCode}01`,
-      name: `LOCKER INPOST - REPSOL ESTACIÓN`,
-      address: `Av. de la Constitución, 142`,
-      city: `Madrid`,
-      postalCode: pCode,
-      type: 'locker'
-    },
-    {
-      id: `ESP${pCode}02`,
-      name: `PUNTO PACK - PAPELERÍA Y PRENSA BIZEN`,
-      address: `Calle Mayor, 12`,
-      city: `Madrid`,
-      postalCode: pCode,
-      type: 'punto_pack'
-    },
-    {
-      id: `ESP${pCode}03`,
-      name: `LOCKER INPOST - SUPERMERCADO DIA`,
-      address: `Paseo de la Castellana, 80`,
-      city: `Madrid`,
-      postalCode: pCode,
-      type: 'locker'
-    }
-  ];
-};
 
 export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckout, onNavigateHome }) => {
   const [step, setStep] = useState<number>(1);
@@ -55,14 +18,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
-  // Shipping method
-  const [shippingMethod, setShippingMethod] = useState<'inpost' | 'home'>('inpost');
-  
-  // InPost search
-  const [searchPostalCode, setSearchPostalCode] = useState('');
-  const [inpostPoints, setInpostPoints] = useState<InPostPoint[]>([]);
-  const [selectedPoint, setSelectedPoint] = useState<InPostPoint | null>(null);
-  const [hasSearched, setHasSearched] = useState(false);
+  // Shipping method is strictly home now
+  const shippingMethod = 'home';
 
   // Home address details
   const [address, setAddress] = useState('');
@@ -74,29 +31,14 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
   const [transactionId, setTransactionId] = useState('');
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
-  // Trigger search for InPost Points
-  const handleLockerSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchPostalCode.trim()) {
-      alert('Por favor, introduce un código postal.');
-      return;
-    }
-    const points = mockInPostPoints(searchPostalCode);
-    setInpostPoints(points);
-    setSelectedPoint(points[0]); // Select first by default
-    setHasSearched(true);
-  };
+
 
   // Step 1 validator
   const isStep1Valid = () => {
     const isContactValid = name.trim() !== '' && email.trim() !== '' && phone.trim() !== '';
     if (!isContactValid) return false;
 
-    if (shippingMethod === 'inpost') {
-      return selectedPoint !== null;
-    } else {
-      return address.trim() !== '' && city.trim() !== '' && homePostalCode.trim() !== '';
-    }
+    return address.trim() !== '' && city.trim() !== '' && homePostalCode.trim() !== '';
   };
 
   // PayPal button script loading hook
@@ -258,14 +200,14 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                     </div>
                   </div>
                   <div className="flex flex-col gap-1.5 md:col-span-2">
-                    <label className="font-mono text-xs font-bold uppercase text-zinc-700">Móvil / Teléfono (Requerido para avisos InPost) *</label>
+                    <label className="font-mono text-xs font-bold uppercase text-zinc-700">Móvil / Teléfono *</label>
                     <div className="relative">
                       <Phone className="absolute left-3 top-3.5 w-4.5 h-4.5 text-zinc-500" />
                       <input 
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Ej. +34 600 123 456 (necesario para el PIN del Locker)"
+                        placeholder="Ej. +34 600 123 456"
                         className="w-full pl-10 pr-4 py-3 border-3 border-black font-mono text-sm bg-zinc-50 focus:bg-white focus:outline-none focus:-translate-y-0.5 focus:shadow-[4px_4px_0_0_#000] transition-all"
                       />
                     </div>
@@ -273,95 +215,13 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                 </div>
 
                 <h2 className="font-heading text-3xl uppercase tracking-wider border-b-2 border-black pb-2 mt-4 flex items-center gap-2">
-                  <MapPin className="w-6 h-6 stroke-[2.5]" />
-                  2. Método de Envío InPost
+                  <Truck className="w-6 h-6 stroke-[2.5]" />
+                  2. Dirección de Envío Domicilio
                 </h2>
 
-                {/* Delivery options tabs */}
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('inpost')}
-                    className={`py-3 px-4 border-3 border-black font-mono font-bold text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                      shippingMethod === 'inpost'
-                        ? 'bg-[#FFDE00] shadow-[4px_4px_0_0_#000] -translate-y-0.5'
-                        : 'bg-white hover:bg-zinc-50'
-                    }`}
-                  >
-                    <MapPin className="w-4 h-4" />
-                    Punto InPost / Locker
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setShippingMethod('home')}
-                    className={`py-3 px-4 border-3 border-black font-mono font-bold text-xs uppercase flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                      shippingMethod === 'home'
-                        ? 'bg-[#FFDE00] shadow-[4px_4px_0_0_#000] -translate-y-0.5'
-                        : 'bg-white hover:bg-zinc-50'
-                    }`}
-                  >
-                    <Truck className="w-4 h-4" />
-                    Envío Domicilio
-                  </button>
-                </div>
-
-                {/* INPOST SEARCH METHOD */}
-                {shippingMethod === 'inpost' && (
-                  <div className="flex flex-col gap-4 border-2 border-zinc-200 p-4 bg-zinc-50">
-                    <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider">// Localiza tu Locker o Punto Pack más cercano:</span>
-                    
-                    <form onSubmit={handleLockerSearch} className="flex gap-2">
-                      <div className="relative flex-grow">
-                        <Search className="absolute left-3 top-3.5 w-4 h-4 text-zinc-500" />
-                        <input 
-                          type="text"
-                          value={searchPostalCode}
-                          onChange={(e) => setSearchPostalCode(e.target.value)}
-                          placeholder="Introduce Código Postal (ej. 28001)"
-                          className="w-full pl-10 pr-4 py-3 border-3 border-black font-mono text-sm bg-white focus:outline-none focus:-translate-y-0.5 focus:shadow-[2px_2px_0_0_#000] transition-all"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="py-3 px-5 bg-black text-white font-mono font-bold text-xs uppercase border-3 border-black shadow-[2px_2px_0_0_#ccc] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all cursor-pointer"
-                      >
-                        Buscar
-                      </button>
-                    </form>
-
-                    {/* Searched locations list */}
-                    {hasSearched && (
-                      <div className="flex flex-col gap-2.5 max-h-60 overflow-y-auto mt-2">
-                        {inpostPoints.map((point) => {
-                          const isSelected = selectedPoint?.id === point.id;
-                          return (
-                            <div
-                              key={point.id}
-                              onClick={() => setSelectedPoint(point)}
-                              className={`p-3 border-2 border-black flex items-start gap-3 transition-all cursor-pointer ${
-                                isSelected ? 'bg-[#FFE6F0] border-secondary' : 'bg-white hover:bg-zinc-50'
-                              }`}
-                            >
-                              <div className={`p-1.5 border border-black rounded-full mt-0.5 ${isSelected ? 'bg-secondary text-white' : 'bg-zinc-100 text-zinc-600'}`}>
-                                <MapPin className="w-4 h-4" />
-                              </div>
-                              <div className="flex flex-col leading-tight select-none">
-                                <span className="font-mono text-xs font-bold">{point.name}</span>
-                                <span className="font-mono text-[10px] text-zinc-600 mt-0.5">{point.address}, {point.postalCode} {point.city}</span>
-                                <span className="font-mono text-[8px] bg-black text-white px-1.5 py-0.5 self-start mt-1.5 font-bold uppercase">ID: {point.id}</span>
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </div>
-                )}
-
                 {/* HOME SHIPPING METHOD */}
-                {shippingMethod === 'home' && (
-                  <div className="flex flex-col gap-4 border-2 border-zinc-200 p-4 bg-zinc-50">
-                    <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider">// Dirección de envío postal:</span>
+                <div className="flex flex-col gap-4 border-2 border-zinc-200 p-4 bg-zinc-50 mt-4">
+                  <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider">// Dirección de envío postal:</span>
                     
                     <div className="flex flex-col gap-3">
                       <div className="flex flex-col gap-1">
@@ -408,7 +268,6 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                       </div>
                     </div>
                   </div>
-                )}
 
                 {/* Continue button */}
                 <button
@@ -449,11 +308,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                     <span><strong>Destinatario:</strong> {name}</span>
                     <span><strong>Contacto:</strong> {email} | {phone}</span>
                     <span className="mt-1.5">
-                      <strong>Entrega:</strong> {
-                        shippingMethod === 'inpost' 
-                          ? `Punto InPost (${selectedPoint?.id}) - ${selectedPoint?.name}, ${selectedPoint?.address}, ${selectedPoint?.postalCode} ${selectedPoint?.city}`
-                          : `Domicilio - ${address}, ${homePostalCode} ${city}, ${country}`
-                      }
+                      <strong>Entrega:</strong> Domicilio - {address}, {homePostalCode} {city}, {country}
                     </span>
                   </div>
                 </div>
