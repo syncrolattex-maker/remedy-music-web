@@ -49,6 +49,7 @@ const catalogData: Track[] = [
     artist: 'Dj Rosvil',
     format: 'vinyl',
     audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    spotifyUrl: 'https://open.spotify.com/track/6wHin0kHdmzPDrcoUAvhy0?si=39e527bed24749ee',
     price: 18.00,
     color: '#2A464A', // dark teal from cover
     tracks: [
@@ -654,6 +655,17 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
             className="w-full py-2 px-4 bg-[#1da0c3] hover:bg-[#1688a6] text-white border-3 border-black font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all text-center select-none"
           >
             Listen on Bandcamp
+          </a>
+        )}
+
+        {track.spotifyUrl && (
+          <a
+            href={track.spotifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 px-4 bg-[#1DB954] hover:bg-[#1ed760] text-black border-3 border-black font-mono font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all text-center select-none"
+          >
+            Listen on Spotify
           </a>
         )}
 
