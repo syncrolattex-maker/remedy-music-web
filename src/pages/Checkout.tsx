@@ -185,6 +185,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
   const getSleeveImage = () => {
     if (checkoutItem.track.id === '45-1') return '/catalog/thats_the_way_cover.png';
     if (checkoutItem.track.id === '45-2') return '/catalog/freedust_cover.jpg';
+    if (checkoutItem.track.id === '45-3') return '/catalog/compro_oro_cover.jpg';
     if (checkoutItem.track.id === '45-4') return '/catalog/we_can_fly_cover.jpg';
     if (checkoutItem.track.id === 'rap-1') return '/catalog/kendall_syndrome_cover.jpg';
     if (checkoutItem.track.id === 'rap-2') return '/catalog/safary_cover.png';

@@ -19,7 +19,14 @@ const catalogData: Track[] = [
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview124/v4/6b/ec/39/6bec391f-bcec-0998-1069-f14ef0a7403a/mzaf_6907891805952860261.plus.aac.p.m4a',
     price: 15.00,
-    color: '#FFE6F0' // pastel pink
+    color: '#FFE6F0', // pastel pink
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/that-s-the-way-ep',
+    tracks: [
+      'Bboy Thing',
+      'That´s The Way',
+      'The Way short Version (Bonus track digital only)',
+      'Way beats (Bonus track digital only)'
+    ]
   },
   {
     id: '45-2',
@@ -28,16 +35,27 @@ const catalogData: Track[] = [
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d6/fc/f2/d6fcf221-94f1-d956-0d2c-a6c2193a6b58/mzaf_3663461496267727358.plus.aac.p.m4a',
     price: 15.00,
-    color: '#FAF6EE' // cream
+    color: '#FAF6EE', // cream
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/freedust-feat-mabreeze',
+    tracks: [
+      "What We've Lost (Vocal)",
+      "What We've Lost (Instrumental)",
+      "Bonus Beats"
+    ]
   },
   {
     id: '45-3',
-    title: 'Compro Oro',
-    artist: 'Rhythm Foundation',
+    title: 'Nuevos Capitales',
+    artist: 'Dj Rosvil',
     format: 'vinyl',
     audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
     price: 18.00,
-    color: '#EBFCE5' // pastel green
+    color: '#2A464A', // dark teal from cover
+    tracks: [
+      'A1 Vocal',
+      'B1 Instrumental',
+      'B2 Bonus Beats'
+    ]
   },
   {
     id: '45-4',
@@ -301,13 +319,14 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
   const getCoverImage = () => {
     if (track.id === '45-1') return '/catalog/thats_the_way_cover.png';
     if (track.id === '45-2') return '/catalog/freedust_cover.jpg';
+    if (track.id === '45-3') return '/catalog/compro_oro_cover.jpg';
     if (track.id === '45-4') return '/catalog/we_can_fly_cover.jpg';
     if (track.id === 'rap-1') return '/catalog/kendall_syndrome_cover.jpg';
     if (track.id === 'rap-2') return '/catalog/safary_cover.png';
@@ -321,8 +340,8 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
   const getRecordImage = () => {
     if (track.id === '45-1') {
       if (selectedVariant === 1) return '/catalog/thats_the_way_1.jpg';
-      if (selectedVariant === 2) return '/catalog/thats_the_way_2.jpg';
-      if (selectedVariant === 3) return '/catalog/thats_the_way_3.jpg';
+      if (selectedVariant === 2) return '/catalog/thats_the_way_3.jpg';
+      if (selectedVariant === 3) return '/catalog/thats_the_way_2.jpg';
       if (selectedVariant === 4) return '/catalog/thats_the_way_4.jpg';
     }
     if (track.id === '45-2') {
@@ -359,7 +378,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
         if (selectedVariant === 1) edition = 'Black Vinyl - Standard';
         if (selectedVariant === 2) edition = 'Red Vinyl - Standard';
         if (selectedVariant === 3) edition = 'Black Vinyl - Spiral Label';
-        if (selectedVariant === 4) edition = 'Red Vinyl - Spiral Label';
+        if (selectedVariant === 4) edition = 'Cola Vinyl - Spiral Label';
       } else if (track.id === '45-2') {
         if (selectedVariant === 1) edition = 'Standard Vocal';
         if (selectedVariant === 2) edition = 'Spiral Label';
@@ -565,14 +584,14 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
                   >
                     <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
                   </button>
-                  {/* Variant 4: Red (Spiral label) */}
+                  {/* Variant 4: Cola (Spiral label) */}
                   <button 
                     type="button"
                     onClick={() => setSelectedVariant(4)}
-                    title="Red Vinyl (Spiral Label)"
-                    className={`w-5.5 h-5.5 rounded-full bg-red-600 border-2 transition-all flex items-center justify-center cursor-pointer ${selectedVariant === 4 ? 'border-secondary scale-110 shadow-[2px_2px_0_0_#000]' : 'border-zinc-500 hover:scale-105'}`}
+                    title="Cola Vinyl - Spiral Label"
+                    className={`w-5.5 h-5.5 rounded-full bg-[#4A2010] border-2 transition-all flex items-center justify-center cursor-pointer ${selectedVariant === 4 ? 'border-secondary scale-110 shadow-[2px_2px_0_0_#000]' : 'border-zinc-500 hover:scale-105'}`}
                   >
-                    <div className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
+                    <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
                   </button>
                 </>
               )}

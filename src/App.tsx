@@ -14,6 +14,8 @@ import { Catalog } from './pages/Catalog';
 import { Player } from './components/Player';
 import { Bios } from './pages/Bios';
 import { Pressing } from './pages/Pressing';
+import { SmoothScroll } from './components/SmoothScroll';
+import { CustomCursor } from './components/CustomCursor';
 
 export interface Track {
   id: string;
@@ -95,67 +97,70 @@ export default function App() {
     setIsPlaying(!isPlaying);
   };
 
-  const isDarkPage = location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing';
+  const isDarkPage = location.pathname === '/' || location.pathname === '/home' || location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing';
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans relative ${isDarkPage ? 'bg-[#0a0a0a]' : 'bg-surface'}`}>
-      <Header />
-      <div className="flex-grow">
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/contacto" element={<Contact />} />
-          <Route path="/bios" element={<Bios />} />
-          <Route path="/pressing" element={<Pressing />} />
-          <Route 
-            path="/catalogo" 
-            element={
-              <Catalog 
-                currentTrack={currentTrack} 
-                isPlaying={isPlaying} 
-                onPlayTrack={handlePlayTrack} 
-                onBuyTrack={handleBuyTrack}
-              />
-            } 
-          />
-          <Route 
-            path="/catalogo/:subfamily" 
-            element={
-              <Catalog 
-                currentTrack={currentTrack} 
-                isPlaying={isPlaying} 
-                onPlayTrack={handlePlayTrack} 
-                onBuyTrack={handleBuyTrack}
-              />
-            } 
-          />
-          <Route 
-            path="/checkout" 
-            element={
-              <Checkout 
-                checkoutItem={checkoutItem}
-                onClearCheckout={() => setCheckoutItem(null)}
-                onNavigateHome={() => navigate('/catalogo/45s-club')}
-              />
-            } 
-          />
-        </Routes>
-      </div>
-      <Footer />
+    <SmoothScroll>
+      <CustomCursor />
+      <div className={`min-h-screen flex flex-col font-sans relative ${isDarkPage ? 'bg-[#0a0a0a]' : 'bg-surface'}`}>
+        <Header />
+        <div className="flex-grow">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/contacto" element={<Contact />} />
+            <Route path="/bios" element={<Bios />} />
+            <Route path="/pressing" element={<Pressing />} />
+            <Route 
+              path="/catalogo" 
+              element={
+                <Catalog 
+                  currentTrack={currentTrack} 
+                  isPlaying={isPlaying} 
+                  onPlayTrack={handlePlayTrack} 
+                  onBuyTrack={handleBuyTrack}
+                />
+              } 
+            />
+            <Route 
+              path="/catalogo/:subfamily" 
+              element={
+                <Catalog 
+                  currentTrack={currentTrack} 
+                  isPlaying={isPlaying} 
+                  onPlayTrack={handlePlayTrack} 
+                  onBuyTrack={handleBuyTrack}
+                />
+              } 
+            />
+            <Route 
+              path="/checkout" 
+              element={
+                <Checkout 
+                  checkoutItem={checkoutItem}
+                  onClearCheckout={() => setCheckoutItem(null)}
+                  onNavigateHome={() => navigate('/catalogo/45s-club')}
+                />
+              } 
+            />
+          </Routes>
+        </div>
+        <Footer />
 
-      {/* Global Persistent Player */}
-      {currentTrack && (
-        <Player 
-          currentTrack={currentTrack} 
-          isPlaying={isPlaying} 
-          onTogglePlay={handleTogglePlay} 
-          audioRef={audioRef}
-          onClose={() => {
-            setIsPlaying(false);
-            setCurrentTrack(null);
-          }}
-        />
-      )}
-    </div>
+        {/* Global Persistent Player */}
+        {currentTrack && (
+          <Player 
+            currentTrack={currentTrack} 
+            isPlaying={isPlaying} 
+            onTogglePlay={handleTogglePlay} 
+            audioRef={audioRef}
+            onClose={() => {
+              setIsPlaying(false);
+              setCurrentTrack(null);
+            }}
+          />
+        )}
+      </div>
+    </SmoothScroll>
   );
 }

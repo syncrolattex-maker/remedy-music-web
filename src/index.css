@@ -178,3 +178,11 @@
   animation: spin-slow 4s linear infinite;
 }
 
+
+body {
+  cursor: none !important;
+}
+
+button, a, input, select, textarea {
+  cursor: none !important;
+}

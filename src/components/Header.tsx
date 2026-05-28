@@ -4,7 +4,6 @@ import { Menu, X } from 'lucide-react';
 
 export const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isCatalogoOpen, setIsCatalogoOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,73 +37,37 @@ export const Header = () => {
       <nav className={`${isOpen ? 'flex brutalist-border p-6 bg-surface mt-4 w-full gap-4' : 'hidden'} md:flex flex-col md:flex-row gap-6 font-bold text-lg w-full md:w-auto items-center font-display`}>
         <Link 
           to="/home"
+          onClick={() => setIsOpen(false)}
           className={`hover:text-secondary ${activePage === 'home' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
         >
           Inicio
         </Link>
-        <div 
-          className="relative"
-          onMouseEnter={() => setIsCatalogoOpen(true)}
-          onMouseLeave={() => setIsCatalogoOpen(false)}
+        <button 
+          onClick={() => {
+            navigate('/catalogo/45s-club');
+            setIsOpen(false);
+          }} 
+          className={`hover:text-secondary font-display ${activePage === 'catalog' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
         >
-          <button 
-            onClick={() => {
-              navigate('/catalogo/45s-club');
-              setIsCatalogoOpen(!isCatalogoOpen);
-            }} 
-            className={`hover:text-secondary flex items-center gap-1 font-display ${activePage === 'catalog' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
-          >
-            Catalogo
-          </button>
-          <div className={`
-            ${isCatalogoOpen ? 'block' : 'hidden'}
-            ${isOpen ? 'relative mt-2' : 'absolute md:top-full left-0 md:mt-2'}
-            p-4 bg-white brutalist-border flex flex-col gap-2 w-48 z-20 font-normal
-          `}>
-              <Link 
-                to="/catalogo/45s-club" 
-                onClick={() => setIsCatalogoOpen(false)}
-                className="hover:text-secondary font-mono text-xs uppercase"
-              >
-                45s Club
-              </Link>
-              <Link 
-                to="/catalogo/raps" 
-                onClick={() => setIsCatalogoOpen(false)}
-                className="hover:text-secondary font-mono text-xs uppercase"
-              >
-                Raps
-              </Link>
-              <Link 
-                to="/catalogo/tape-series" 
-                onClick={() => setIsCatalogoOpen(false)}
-                className="hover:text-secondary font-mono text-xs uppercase"
-              >
-                Tape Series
-              </Link>
-              <Link 
-                to="/catalogo/beats" 
-                onClick={() => setIsCatalogoOpen(false)}
-                className="hover:text-secondary font-mono text-xs uppercase"
-              >
-                Beats
-              </Link>
-            </div>
-        </div>
+          Catalogo
+        </button>
         <Link
           to="/bios"
+          onClick={() => setIsOpen(false)}
           className={`hover:text-secondary ${activePage === 'bios' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
         >
           Bios
         </Link>
         <Link
           to="/pressing"
+          onClick={() => setIsOpen(false)}
           className={`hover:text-secondary ${activePage === 'pressing' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
         >
           Pressing
         </Link>
         <Link 
           to="/contacto"
+          onClick={() => setIsOpen(false)}
           className={`hover:text-secondary ${activePage === 'contact' ? 'text-secondary decoration-2 underline underline-offset-4' : ''}`}
         >
           Contacto
