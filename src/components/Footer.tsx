@@ -1,4 +1,4 @@
-import React from 'react';
+import { Link } from 'react-router-dom';
 
 export const Footer = () => (
   <footer className="bg-black text-white p-8">
@@ -6,7 +6,7 @@ export const Footer = () => (
       <div className="flex gap-6 font-bold text-sm flex-wrap justify-center font-display">
         <a href="#">Privacy</a>
         <a href="#">Terms</a>
-        <a href="#">Shipping</a>
+        <Link to="/shipping" onClick={() => window.scrollTo(0, 0)}>Shipping</Link>
         <a href="#">Artist Portal</a>
       </div>
       <img src="/footer-logo.png" alt="Remedy Music" className="h-20" />

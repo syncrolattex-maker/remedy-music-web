@@ -11,6 +11,7 @@ import { Home } from './pages/Home';
 import { Checkout } from './pages/Checkout';
 import { Contact } from './pages/Contact';
 import { Catalog } from './pages/Catalog';
+import { Shipping } from './pages/Shipping';
 import { Player } from './components/Player';
 import { Bios } from './pages/Bios';
 import { Pressing } from './pages/Pressing';
@@ -111,6 +112,7 @@ export default function App() {
             <Route path="/contacto" element={<Contact />} />
             <Route path="/bios" element={<Bios />} />
             <Route path="/pressing" element={<Pressing />} />
+            <Route path="/shipping" element={<Shipping />} />
             <Route 
               path="/catalogo" 
               element={
