@@ -258,12 +258,20 @@ const catalogData: Track[] = [
   },
   {
     id: 'beat-4',
-    title: 'Tempues Fugit',
-    artist: 'Time Loop Collective',
+    title: 'Tempus Fugit',
+    artist: 'Golden Samplers (feat. Dj Taktel)',
     format: 'beats',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-14.mp3',
+    audioUrl: '/catalog/tempus_fugit_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/tempus-fugit',
     price: 10.00,
-    color: '#FFF9E6' // pastel yellow
+    color: '#D8CEBC', // sand/beige
+    tracks: [
+      'A1 Everything Changes.',
+      'A2 Backwash.',
+      'A3 Bitter.',
+      'B1 Loop Playback.',
+      'B2 Tempus Fugit.'
+    ]
   }
 ];
 
@@ -341,7 +349,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3' || track.id === 'beat-4';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -359,6 +367,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'beat-1') return '/catalog/sampled_head_cover.jpg';
     if (track.id === 'beat-2') return '/catalog/safary_beats_cover.png';
     if (track.id === 'beat-3') return '/catalog/wall_of_shadows_cover.jpg';
+    if (track.id === 'beat-4') return '/catalog/tempus_fugit_cover.jpg';
     return '';
   };
 
