@@ -244,9 +244,17 @@ const catalogData: Track[] = [
     title: 'Wall of shadows',
     artist: 'Dj Rosvil',
     format: 'beats',
-    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/16/22/eb/1622eb0a-8e31-f6ba-e824-77ad2af97d99/mzaf_17955943581338603352.plus.aac.p.m4a',
+    audioUrl: '/catalog/wall_of_shadows_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/wall-of-shadows-2',
     price: 12.00,
-    color: '#EBFCE5' // pastel green
+    color: '#93EEA7', // glitch green
+    tracks: [
+      'A1 Hi!! Producers.',
+      'A2 Wall On Which The Prophets Wrote.',
+      'A3 Like Past Wind.',
+      'B1 Italian Shadow.',
+      'B2 Lake.'
+    ]
   },
   {
     id: 'beat-4',
@@ -333,7 +341,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -350,6 +358,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'tape-3') return '/catalog/geometria_variable_cover.jpg';
     if (track.id === 'beat-1') return '/catalog/sampled_head_cover.jpg';
     if (track.id === 'beat-2') return '/catalog/safary_beats_cover.png';
+    if (track.id === 'beat-3') return '/catalog/wall_of_shadows_cover.jpg';
     return '';
   };
 
