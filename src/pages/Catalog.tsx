@@ -209,21 +209,35 @@ const catalogData: Track[] = [
   // Beats (Sampler / MPC)
   {
     id: 'beat-1',
-    title: 'Sampledhead',
-    artist: 'MPC Orchestra',
+    title: 'Sampled Head (Argent Rock 69-79)',
+    artist: 'Dj Rosvil',
     format: 'beats',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3',
+    audioUrl: '/catalog/sampled_head_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/sampled-head-argent-rock-69-79',
     price: 10.00,
-    color: '#FAF6EE' // cream
+    color: '#D91C80', // pinkish purple
+    tracks: [
+      'A1 Argentrock 69-79',
+      'A2 Hippies Milicos',
+      'A3 Música Progresiva',
+      'B1 Sampledhead (Bonus)'
+    ]
   },
   {
     id: 'beat-2',
     title: 'Safary Beats',
-    artist: 'Beatmaker Safari',
+    artist: 'Dj Rosvil',
     format: 'beats',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-12.mp3',
+    audioUrl: '/catalog/safary_beats_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/safary-beats',
     price: 10.00,
-    color: '#FFE6F0' // pastel pink
+    color: '#E30A17', // red
+    tracks: [
+      'A1 Safary (Instrumental)',
+      'A2 Beat 02',
+      'A3 Beat 03',
+      'B1 Bonus Beat'
+    ]
   },
   {
     id: 'beat-3',
@@ -319,7 +333,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -334,6 +348,8 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'tape-1') return '/catalog/control_remoto_cover.jpg';
     if (track.id === 'tape-2') return '/catalog/arrugas_en_el_chandal_cover_case.png';
     if (track.id === 'tape-3') return '/catalog/geometria_variable_cover.jpg';
+    if (track.id === 'beat-1') return '/catalog/sampled_head_cover.jpg';
+    if (track.id === 'beat-2') return '/catalog/safary_beats_cover.png';
     return '';
   };
 
