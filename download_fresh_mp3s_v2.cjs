@@ -43,8 +43,9 @@ async function fetchAndDownload(url, destName) {
 }
 
 async function main() {
-  await fetchAndDownload('https://remedymusicvlc.bandcamp.com/album/sampled-head-argent-rock-69-79', 'sampled_head_preview.mp3');
-  await fetchAndDownload('https://remedymusicvlc.bandcamp.com/album/safary-beats', 'safary_beats_preview.mp3');
+  await fetchAndDownload('https://remedymusicvlc.bandcamp.com/album/control-remoto', 'control_remoto_preview.mp3');
+  await fetchAndDownload('https://remedymusicvlc.bandcamp.com/album/arrugas-en-el-ch-ndal', 'arrugas_en_el_chandal_preview.mp3');
+  await fetchAndDownload('https://remedymusicvlc.bandcamp.com/album/geometria-variable', 'geometria_variable_preview.mp3');
 }
 
 main();

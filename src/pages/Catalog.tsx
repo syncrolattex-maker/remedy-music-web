@@ -143,7 +143,7 @@ const catalogData: Track[] = [
     title: 'Control Remoto',
     artist: 'Dj Taktel & Cómodo',
     format: 'cassette',
-    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/01/20/ea/0120ea9f-3a5f-9e3b-0758-f3774a37afe2/mzaf_15075094142984574226.plus.aac.p.m4a',
+    audioUrl: '/catalog/control_remoto_preview.mp3',
     price: 10.00,
     color: '#FFF3E0', // warm orange tint
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/control-remoto',
@@ -171,9 +171,10 @@ const catalogData: Track[] = [
     title: 'Arrugas en el Chándal',
     artist: 'Dj Taktel',
     format: 'cassette',
-    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview115/v4/01/20/ea/0120ea9f-3a5f-9e3b-0758-f3774a37afe2/mzaf_15075094142984574226.plus.aac.p.m4a',
+    audioUrl: '/catalog/arrugas_en_el_chandal_preview.mp3',
     price: 12.00,
     color: '#FFF9E6', // pastel yellow
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/arrugas-en-el-ch-ndal',
     tracks: [
       'Tel y Sabalas (Intro) [con Golden Samplers]',
       'Qué les Parece',
@@ -189,7 +190,7 @@ const catalogData: Track[] = [
     title: 'Geometría Variable',
     artist: 'Geometria Variable (Tino & Eddie)',
     format: 'cassette',
-    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/15/56/92/15569243-e3c4-ab4a-8989-755e6a2b446c/mzaf_11098362903754451430.plus.aac.p.m4a',
+    audioUrl: '/catalog/geometria_variable_preview.mp3',
     price: 10.00,
     color: '#EDE7F6', // lavender purple matching cassette shell
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/geometria-variable',

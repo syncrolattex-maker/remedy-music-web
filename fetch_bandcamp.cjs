@@ -47,8 +47,8 @@ async function fetchAlbumInfo(url) {
 }
 
 async function main() {
-  await fetchAlbumInfo('https://remedymusicvlc.bandcamp.com/album/sampled-head-argent-rock-69-79');
-  await fetchAlbumInfo('https://remedymusicvlc.bandcamp.com/album/safary-beats');
+  await fetchAlbumInfo('https://remedymusicvlc.bandcamp.com/album/control-remoto');
+  await fetchAlbumInfo('https://remedymusicvlc.bandcamp.com/album/arrugas-en-el-ch-ndal');
 }
 
 main();
