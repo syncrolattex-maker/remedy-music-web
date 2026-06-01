@@ -15,6 +15,7 @@ import { Shipping } from './pages/Shipping';
 import { Player } from './components/Player';
 import { Bios } from './pages/Bios';
 import { Pressing } from './pages/Pressing';
+import { Terms } from './pages/Terms';
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
 
@@ -98,7 +99,7 @@ export default function App() {
     setIsPlaying(!isPlaying);
   };
 
-  const isDarkPage = location.pathname === '/' || location.pathname === '/home' || location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing';
+  const isDarkPage = location.pathname === '/' || location.pathname === '/home' || location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing' || location.pathname === '/terms';
 
   return (
     <SmoothScroll>
@@ -113,6 +114,7 @@ export default function App() {
             <Route path="/bios" element={<Bios />} />
             <Route path="/pressing" element={<Pressing />} />
             <Route path="/shipping" element={<Shipping />} />
+            <Route path="/terms" element={<Terms />} />
             <Route 
               path="/catalogo" 
               element={
