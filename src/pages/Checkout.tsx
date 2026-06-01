@@ -365,21 +365,10 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                   </div>
 
                   <div className="flex flex-col gap-1.5 pb-2 border-b border-zinc-200">
-                    <span className="font-bold text-secondary">ENTREGA (INPOST):</span>
-                    {shippingMethod === 'inpost' ? (
-                      <>
-                        <span className="font-bold">{selectedPoint?.name}</span>
-                        <span>Dirección: {selectedPoint?.address}</span>
-                        <span>Código Postal: {selectedPoint?.postalCode} {selectedPoint?.city}</span>
-                        <span className="font-bold bg-black text-white px-1.5 py-0.5 self-start text-[10px] mt-1.5">ID RECOGIDA: {selectedPoint?.id}</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Domicilio del Cliente:</span>
-                        <span>{address}</span>
-                        <span>{homePostalCode} {city}, {country}</span>
-                      </>
-                    )}
+                    <span className="font-bold text-secondary">ENTREGA A DOMICILIO:</span>
+                    <span>Domicilio del Cliente:</span>
+                    <span>{address}</span>
+                    <span>{homePostalCode} {city}, {country}</span>
                   </div>
 
                   <div className="flex justify-between font-bold text-sm pt-2">
