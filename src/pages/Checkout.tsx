@@ -1,5 +1,11 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useState, useEffect } from 'react';
-import { MapPin, Truck, Phone, Mail, User, Search, CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
+import { MapPin, Truck, Phone, Mail, User, CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
 import { Track } from '../App';
 
 interface CheckoutProps {
@@ -8,11 +14,20 @@ interface CheckoutProps {
   onNavigateHome: () => void;
 }
 
-
-
 export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckout, onNavigateHome }) => {
+  const location = useLocation();
   const [step, setStep] = useState<number>(1);
   
+  // localCheckoutItem state to survive page reloads when returning from PayPal
+  const [localCheckoutItem, setLocalCheckoutItem] = useState<{ track: Track; edition: string } | null>(checkoutItem);
+
+  // Sync state if prop changes before redirect
+  useEffect(() => {
+    if (checkoutItem) {
+      setLocalCheckoutItem(checkoutItem);
+    }
+  }, [checkoutItem]);
+
   // Contact details
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -29,9 +44,64 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
 
   // PayPal Payment details
   const [transactionId, setTransactionId] = useState('');
-  const [isScriptLoaded, setIsScriptLoaded] = useState(false);
 
-
+  // Recover session after PayPal redirect
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get('success') === 'true') {
+      try {
+        const storedItem = sessionStorage.getItem('remedy_checkout_item');
+        const storedName = sessionStorage.getItem('remedy_checkout_name');
+        const storedEmail = sessionStorage.getItem('remedy_checkout_email');
+        const storedPhone = sessionStorage.getItem('remedy_checkout_phone');
+        const storedAddress = sessionStorage.getItem('remedy_checkout_address');
+        const storedCity = sessionStorage.getItem('remedy_checkout_city');
+        const storedPostalCode = sessionStorage.getItem('remedy_checkout_postal_code');
+        const storedCountry = sessionStorage.getItem('remedy_checkout_country');
+        
+        if (storedItem) {
+          const parsedItem = JSON.parse(storedItem);
+          setLocalCheckoutItem(parsedItem);
+          if (storedName) setName(storedName);
+          if (storedEmail) setEmail(storedEmail);
+          if (storedPhone) setPhone(storedPhone);
+          if (storedAddress) setAddress(storedAddress);
+          if (storedCity) setCity(storedCity);
+          if (storedPostalCode) setHomePostalCode(storedPostalCode);
+          if (storedCountry) setCountry(storedCountry);
+          
+          setTransactionId(params.get('tx') || `PAYID-PP-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
+          setStep(3);
+          
+          // Clear cart in parent state
+          onClearCheckout();
+        }
+      } catch (e) {
+        console.error('Error recovering checkout session:', e);
+      }
+    } else if (params.get('cancel') === 'true') {
+      try {
+        const storedName = sessionStorage.getItem('remedy_checkout_name');
+        const storedEmail = sessionStorage.getItem('remedy_checkout_email');
+        const storedPhone = sessionStorage.getItem('remedy_checkout_phone');
+        const storedAddress = sessionStorage.getItem('remedy_checkout_address');
+        const storedCity = sessionStorage.getItem('remedy_checkout_city');
+        const storedPostalCode = sessionStorage.getItem('remedy_checkout_postal_code');
+        const storedCountry = sessionStorage.getItem('remedy_checkout_country');
+        
+        if (storedName) setName(storedName);
+        if (storedEmail) setEmail(storedEmail);
+        if (storedPhone) setPhone(storedPhone);
+        if (storedAddress) setAddress(storedAddress);
+        if (storedCity) setCity(storedCity);
+        if (storedPostalCode) setHomePostalCode(storedPostalCode);
+        if (storedCountry) setCountry(storedCountry);
+        
+        setStep(2);
+        alert('Pago cancelado en PayPal. Puedes intentarlo de nuevo.');
+      } catch (e) {}
+    }
+  }, [location]);
 
   // Step 1 validator
   const isStep1Valid = () => {
@@ -41,74 +111,49 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
     return address.trim() !== '' && city.trim() !== '' && homePostalCode.trim() !== '';
   };
 
-  // PayPal button script loading hook
-  useEffect(() => {
-    let script: HTMLScriptElement | null = null;
+  // Redirect to PayPal Traditional Standard Checkout
+  const handlePayClick = () => {
+    if (!localCheckoutItem) return;
     
-    if (step === 2 && !window.hasOwnProperty('paypal')) {
-      script = document.createElement('script');
-      const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || 'sb';
-      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=EUR`;
-      script.async = true;
-      script.onload = () => {
-        setIsScriptLoaded(true);
-      };
-      document.body.appendChild(script);
-    } else if (step === 2 && window.hasOwnProperty('paypal')) {
-      setIsScriptLoaded(true);
-    }
+    // Save state to sessionStorage
+    sessionStorage.setItem('remedy_checkout_item', JSON.stringify(localCheckoutItem));
+    sessionStorage.setItem('remedy_checkout_name', name);
+    sessionStorage.setItem('remedy_checkout_email', email);
+    sessionStorage.setItem('remedy_checkout_phone', phone);
+    sessionStorage.setItem('remedy_checkout_address', address);
+    sessionStorage.setItem('remedy_checkout_city', city);
+    sessionStorage.setItem('remedy_checkout_postal_code', homePostalCode);
+    sessionStorage.setItem('remedy_checkout_country', country);
+    
+    const businessEmail = 'remedymusicvlc@gmail.com';
+    const itemName = `${localCheckoutItem.track.title} (${localCheckoutItem.edition}) - Remedy Music`;
+    const amount = localCheckoutItem.track.price.toFixed(2);
+    
+    // Return URLs
+    const returnUrl = `${window.location.origin}/checkout?success=true`;
+    const cancelUrl = `${window.location.origin}/checkout?cancel=true`;
+    
+    const paypalUrl = `https://www.paypal.com/cgi-bin/webscr?` + 
+      `cmd=_xclick` +
+      `&business=${encodeURIComponent(businessEmail)}` +
+      `&item_name=${encodeURIComponent(itemName)}` +
+      `&amount=${encodeURIComponent(amount)}` +
+      `&currency_code=EUR` +
+      `&return=${encodeURIComponent(returnUrl)}` +
+      `&cancel_return=${encodeURIComponent(cancelUrl)}` +
+      `&no_shipping=1` +
+      `&email=${encodeURIComponent(email)}` +
+      `&first_name=${encodeURIComponent(name)}` +
+      `&address1=${encodeURIComponent(address)}` +
+      `&city=${encodeURIComponent(city)}` +
+      `&zip=${encodeURIComponent(homePostalCode)}` +
+      `&country=ES` +
+      `&lc=ES`;
+      
+    window.location.href = paypalUrl;
+  };
 
-    return () => {
-      // Keep script to avoid reloading, but we handle container cleanup in the next useEffect
-    };
-  }, [step]);
-
-  // PayPal buttons rendering hook
-  useEffect(() => {
-    if (step === 2 && isScriptLoaded) {
-      const container = document.getElementById('paypal-button-container');
-      if (container) {
-        container.innerHTML = ''; // Clear container to prevent duplicate renders
-        
-        const w = window as any;
-        if (w.paypal && w.paypal.Buttons) {
-          w.paypal.Buttons({
-            createOrder: (data: any, actions: any) => {
-              return actions.order.create({
-                purchase_units: [
-                  {
-                    description: `REMEDY MUSIC: ${checkoutItem?.track.title} (${checkoutItem?.edition})`,
-                    amount: {
-                      currency_code: 'EUR',
-                      value: (checkoutItem?.track.price || 15.0).toFixed(2)
-                    }
-                  }
-                ]
-              });
-            },
-            onApprove: async (data: any, actions: any) => {
-              try {
-                const details = await actions.order.capture();
-                setTransactionId(details.id || `PAYID-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
-                setStep(3);
-              } catch (err) {
-                console.error(err);
-                // Fallback success for sandbox simulation if capture fails locally
-                setTransactionId(`PAYID-SB-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
-                setStep(3);
-              }
-            },
-            onError: (err: any) => {
-              console.error('PayPal execution error:', err);
-              alert('Error al procesar el pago. Por favor, inténtalo de nuevo.');
-            }
-          }).render('#paypal-button-container');
-        }
-      }
-    }
-  }, [step, isScriptLoaded, checkoutItem]);
-
-  if (!checkoutItem) {
+  if (!localCheckoutItem) {
     return (
       <main className="w-full min-h-[70vh] bg-surface text-black p-6 md:p-12 flex flex-col items-center justify-center font-sans">
         <div className="w-full max-w-md brutalist-border p-8 bg-white text-center">
@@ -126,16 +171,16 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
   }
 
   const getSleeveImage = () => {
-    if (checkoutItem.track.id === '45-1') return '/catalog/thats_the_way_cover.png';
-    if (checkoutItem.track.id === '45-2') return '/catalog/freedust_cover.jpg';
-    if (checkoutItem.track.id === '45-3') return '/catalog/compro_oro_cover.jpg';
-    if (checkoutItem.track.id === '45-4') return '/catalog/we_can_fly_cover.jpg';
-    if (checkoutItem.track.id === 'rap-1') return '/catalog/kendall_syndrome_cover.jpg';
-    if (checkoutItem.track.id === 'rap-2') return '/catalog/safary_cover.png';
-    if (checkoutItem.track.id === 'rap-3') return '/catalog/the_mixtape_2025_cover.jpg';
-    if (checkoutItem.track.id === 'tape-1') return '/catalog/control_remoto_cover.jpg';
-    if (checkoutItem.track.id === 'tape-2') return '/catalog/arrugas_en_el_chandal_cover_case.png';
-    if (checkoutItem.track.id === 'tape-3') return '/catalog/geometria_variable_cover.jpg';
+    if (localCheckoutItem.track.id === '45-1') return '/catalog/thats_the_way_cover.png';
+    if (localCheckoutItem.track.id === '45-2') return '/catalog/freedust_cover.jpg';
+    if (localCheckoutItem.track.id === '45-3') return '/catalog/compro_oro_cover.jpg';
+    if (localCheckoutItem.track.id === '45-4') return '/catalog/we_can_fly_cover.jpg';
+    if (localCheckoutItem.track.id === 'rap-1') return '/catalog/kendall_syndrome_cover.jpg';
+    if (localCheckoutItem.track.id === 'rap-2') return '/catalog/safary_cover.png';
+    if (localCheckoutItem.track.id === 'rap-3') return '/catalog/the_mixtape_2025_cover.jpg';
+    if (localCheckoutItem.track.id === 'tape-1') return '/catalog/control_remoto_cover.jpg';
+    if (localCheckoutItem.track.id === 'tape-2') return '/catalog/arrugas_en_el_chandal_cover_case.png';
+    if (localCheckoutItem.track.id === 'tape-3') return '/catalog/geometria_variable_cover.jpg';
     return '';
   };
 
@@ -314,18 +359,16 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                   </div>
                 </div>
 
-                <div className="flex flex-col items-center gap-4 py-4 bg-zinc-50 border border-zinc-200 rounded">
-                  <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider mb-2">// Autorización de Transacción:</span>
+                <div className="flex flex-col items-center gap-4 py-8 bg-zinc-50 border border-zinc-200 rounded">
+                  <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider mb-4">// Autorización de Transacción:</span>
                   
-                  {/* PayPal buttons wrapper container */}
-                  <div id="paypal-button-container" className="w-full max-w-sm px-6"></div>
-                  
-                  {!isScriptLoaded && (
-                    <div className="font-mono text-xs text-zinc-500 flex items-center gap-2 py-4">
-                      <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                      Cargando pasarela de PayPal...
-                    </div>
-                  )}
+                  <button
+                    onClick={handlePayClick}
+                    className="group py-4 px-10 bg-[#FFDE00] border-4 border-black font-mono font-black text-sm uppercase tracking-widest flex items-center gap-3 shadow-[6px_6px_0_0_#000] hover:translate-x-1 hover:translate-y-1 hover:shadow-[2px_2px_0_0_#000] active:translate-x-2 active:translate-y-2 active:shadow-none transition-all cursor-pointer text-black"
+                  >
+                    PAGAR CON PAYPAL
+                  </button>
+                  <span className="font-mono text-[9px] text-zinc-400 mt-2 uppercase tracking-wide">// Serás redirigido a la pasarela oficial de PayPal</span>
                 </div>
               </div>
             )}
@@ -361,8 +404,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
 
                   <div className="flex flex-col gap-1 pb-2 border-b border-zinc-200">
                     <span className="font-bold text-[#FF0055]">DETALLE DE COMPRA:</span>
-                    <span>1x {checkoutItem.track.title} ({checkoutItem.edition})</span>
-                    <span><strong>Artista:</strong> {checkoutItem.track.artist}</span>
+                    <span>1x {localCheckoutItem.track.title} ({localCheckoutItem.edition})</span>
+                    <span><strong>Artista:</strong> {localCheckoutItem.track.artist}</span>
                   </div>
 
                   <div className="flex flex-col gap-1.5 pb-2 border-b border-zinc-200">
@@ -374,7 +417,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
 
                   <div className="flex justify-between font-bold text-sm pt-2">
                     <span>PAGO AUTORIZADO:</span>
-                    <span>{checkoutItem.track.price.toFixed(2)} EUR</span>
+                    <span>{localCheckoutItem.track.price.toFixed(2)} EUR</span>
                   </div>
                 </div>
 
@@ -417,12 +460,12 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                       </svg>
                     )}
                   </div>
-                  <div className="flex flex-col leading-tight overflow-hidden">
-                    <span className="font-mono text-xs font-bold text-secondary uppercase tracking-widest">{checkoutItem.track.format}</span>
-                    <span className="font-heading text-xl uppercase truncate mt-0.5">{checkoutItem.track.title}</span>
-                    <span className="font-mono text-[10px] text-zinc-600 truncate uppercase mt-0.5">{checkoutItem.track.artist}</span>
+                  <div className="flex gap-1 flex-col leading-tight overflow-hidden">
+                    <span className="font-mono text-xs font-bold text-secondary uppercase tracking-widest">{localCheckoutItem.track.format}</span>
+                    <span className="font-heading text-xl uppercase truncate mt-0.5">{localCheckoutItem.track.title}</span>
+                    <span className="font-mono text-[10px] text-zinc-600 truncate uppercase mt-0.5">{localCheckoutItem.track.artist}</span>
                     <span className="font-mono text-[9px] bg-zinc-100 border border-zinc-300 px-1.5 py-0.5 mt-1.5 self-start text-zinc-700 truncate font-semibold">
-                      {checkoutItem.edition}
+                      {localCheckoutItem.edition}
                     </span>
                   </div>
                 </div>
@@ -430,15 +473,15 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                 <div className="border-t-2 border-black pt-3 mt-2 flex flex-col gap-1.5 font-mono text-xs">
                   <div className="flex justify-between">
                     <span className="text-zinc-600">Subtotal:</span>
-                    <span>{checkoutItem.track.price.toFixed(2)} EUR</span>
+                    <span>{localCheckoutItem.track.price.toFixed(2)} EUR</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-zinc-600">Envío InPost:</span>
                     <span className="text-green-600 font-bold">GRATIS</span>
                   </div>
-                  <div className="flex justify-between border-t border-dashed border-zinc-400 pt-2 font-bold text-sm mt-1.5">
+                  <div className="flex justify-between border-t border-zinc-400 pt-2 font-bold text-sm mt-1.5">
                     <span>Total Pedido:</span>
-                    <span className="text-[#FF0055]">{checkoutItem.track.price.toFixed(2)} EUR</span>
+                    <span className="text-[#FF0055]">{localCheckoutItem.track.price.toFixed(2)} EUR</span>
                   </div>
                 </div>
               </div>
