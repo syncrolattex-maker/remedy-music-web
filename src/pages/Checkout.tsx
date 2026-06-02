@@ -47,7 +47,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
     
     if (step === 2 && !window.hasOwnProperty('paypal')) {
       script = document.createElement('script');
-      script.src = 'https://www.paypal.com/sdk/js?client-id=sb&currency=EUR';
+      const paypalClientId = import.meta.env.VITE_PAYPAL_CLIENT_ID || 'sb';
+      script.src = `https://www.paypal.com/sdk/js?client-id=${paypalClientId}&currency=EUR`;
       script.async = true;
       script.onload = () => {
         setIsScriptLoaded(true);
