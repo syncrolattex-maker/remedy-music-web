@@ -51,6 +51,7 @@ export const Header = () => {
         >
           Catalogo
         </button>
+        {/* 
         <Link
           to="/bios"
           onClick={() => setIsOpen(false)}
@@ -58,6 +59,7 @@ export const Header = () => {
         >
           Bios
         </Link>
+        */}
         <Link
           to="/pressing"
           onClick={() => setIsOpen(false)}
