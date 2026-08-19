@@ -101,14 +101,14 @@ export const Pressing = () => {
           X
         </div>
 
-        {/* Krakatoa Logo (Typographic Placeholder) */}
+        {/* Krakatoa Logo */}
         <div className="animate-float-down text-center">
-          <div className="border-4 border-white bg-black px-6 py-4 shadow-[8px_8px_0_#FFDE00] rotate-2">
-            <span className="font-heading text-4xl md:text-5xl text-white tracking-widest uppercase">
-              KRAKATOA
-            </span>
-            <p className="font-mono text-xs text-[#FFDE00] tracking-[0.3em] uppercase mt-1">Records</p>
-          </div>
+          <img 
+            src="/krakatoa_logo.png" 
+            alt="Krakatoa Records" 
+            className="h-20 md:h-28 object-contain filter invert drop-shadow-[4px_4px_0_rgba(255,222,0,1)]" 
+            style={{ mixBlendMode: 'screen' }}
+          />
         </div>
       </div>
 
