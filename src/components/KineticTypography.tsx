@@ -29,124 +29,242 @@ export const KineticTypography: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Initial mouse positions
+    // Initial mouse positions (centered)
     mouseRef.current.targetX = width / 2;
     mouseRef.current.targetY = height / 2;
     mouseRef.current.x = width / 2;
     mouseRef.current.y = height / 2;
 
-    const words = [
-      'REMEDY MUSIC VLC',
-      'SAMPLING CULTURE',
-      'DIGGIN THE CRATES',
-      'UNDERGROUND RAP',
-      'RAW BREAKS & BEATS',
-      'KRAKATOA RECORDS',
-      'INDEPENDENT SINCE 2020'
+    // Define 3D rotation math helper
+    const rotateX = (x: number, y: number, z: number, angleRad: number) => {
+      const cos = Math.cos(angleRad);
+      const sin = Math.sin(angleRad);
+      return { x, y: y * cos - z * sin, z: y * sin + z * cos };
+    };
+
+    const rotateY = (x: number, y: number, z: number, angleRad: number) => {
+      const cos = Math.cos(angleRad);
+      const sin = Math.sin(angleRad);
+      return { x: x * cos + z * sin, y, z: -x * sin + z * cos };
+    };
+
+    const rotateZ = (x: number, y: number, z: number, angleRad: number) => {
+      const cos = Math.cos(angleRad);
+      const sin = Math.sin(angleRad);
+      return { x: x * cos - y * sin, y: x * sin + y * cos, z };
+    };
+
+    // 3D Perspective projection
+    const project = (x: number, y: number, z: number) => {
+      const fov = 420;
+      const scale = fov / (fov - z);
+      return {
+        x: width / 2 + x * scale,
+        y: height / 2 + y * scale,
+        scale
+      };
+    };
+
+    // Construct Scaffolding 3D Models
+    const outerSize = 160;
+    const outerVertices = [
+      { x: -outerSize, y: -outerSize, z: -outerSize }, // 0
+      { x:  outerSize, y: -outerSize, z: -outerSize }, // 1
+      { x:  outerSize, y:  outerSize, z: -outerSize }, // 2
+      { x: -outerSize, y:  outerSize, z: -outerSize }, // 3
+      { x: -outerSize, y: -outerSize, z:  outerSize }, // 4
+      { x:  outerSize, y: -outerSize, z:  outerSize }, // 5
+      { x:  outerSize, y:  outerSize, z:  outerSize }, // 6
+      { x: -outerSize, y:  outerSize, z:  outerSize }  // 7
     ];
 
-    let angleOffset = 0;
+    const innerSize = 85;
+    const innerVertices = [
+      { x: -innerSize, y: -innerSize, z: -innerSize }, // 0
+      { x:  innerSize, y: -innerSize, z: -innerSize }, // 1
+      { x:  innerSize, y:  innerSize, z: -innerSize }, // 2
+      { x: -innerSize, y:  innerSize, z: -innerSize }, // 3
+      { x: -innerSize, y: -innerSize, z:  innerSize }, // 4
+      { x:  innerSize, y: -innerSize, z:  innerSize }, // 5
+      { x:  innerSize, y:  innerSize, z:  innerSize }, // 6
+      { x: -innerSize, y:  innerSize, z:  innerSize }  // 7
+    ];
+
+    const edges = [
+      { a: 0, b: 1, text: 'REMEDY' },
+      { a: 1, b: 2, text: 'MUSIC' },
+      { a: 2, b: 3, text: 'VLC' },
+      { a: 3, b: 0, text: '2020' },
+      { a: 4, b: 5, text: 'SAMPLING' },
+      { a: 5, b: 6, text: 'CULTURE' },
+      { a: 6, b: 7, text: 'DIGGIN' },
+      { a: 7, b: 4, text: 'CRATES' },
+      { a: 0, b: 4, text: 'ANALOG' },
+      { a: 1, b: 5, text: 'BREAKS' },
+      { a: 2, b: 6, text: 'BEATS' },
+      { a: 3, b: 7, text: 'VINYL' }
+    ];
+
+    const innerEdges = [
+      { a: 0, b: 1, text: 'SOUL' },
+      { a: 1, b: 2, text: 'FUNK' },
+      { a: 2, b: 3, text: 'RAP' },
+      { a: 3, b: 0, text: 'JAZZ' },
+      { a: 4, b: 5, text: 'CUT' },
+      { a: 5, b: 6, text: 'DJ' },
+      { a: 6, b: 7, text: 'RAW' },
+      { a: 7, b: 4, text: 'TAPES' },
+      { a: 0, b: 4, text: 'MPC' },
+      { a: 1, b: 5, text: '1200' },
+      { a: 2, b: 6, text: 'GEAR' },
+      { a: 3, b: 7, text: 'TRUE' }
+    ];
+
+    let time = 0;
 
     const render = () => {
+      time += 0.008;
+
       const mouse = mouseRef.current;
-      mouse.x += (mouse.targetX - mouse.x) * 0.05;
-      mouse.y += (mouse.targetY - mouse.y) * 0.05;
+      mouse.x += (mouse.targetX - mouse.x) * 0.06;
+      mouse.y += (mouse.targetY - mouse.y) * 0.06;
 
       ctx.clearRect(0, 0, width, height);
 
-      // Speed changes with mouse X position
-      const speedFactor = 1 + (mouse.x - width / 2) / (width / 2) * 1.5;
-      angleOffset += 0.004 * speedFactor;
+      // Mouse position translates into rotation offsets
+      const angleY = (mouse.x - width / 2) * 0.005 + time * 0.5;
+      const angleX = (mouse.y - height / 2) * 0.005 + time * 0.2;
+      const angleZ = time * 0.1;
 
-      // Tilt changes with mouse Y position (angle in degrees)
-      const tilt = (mouse.y - height / 2) / (height / 2) * 35; 
+      // Rotate and project all vertices of both cubes
+      const rotatePoint = (p: { x: number; y: number; z: number }) => {
+        let rotated = rotateX(p.x, p.y, p.z, angleX);
+        rotated = rotateY(rotated.x, rotated.y, rotated.z, angleY);
+        rotated = rotateZ(rotated.x, rotated.y, rotated.z, angleZ);
+        return rotated;
+      };
 
-      const cylinderCount = 5;
-      const spacing = height / (cylinderCount + 1);
+      const outerRotated = outerVertices.map(rotatePoint);
+      const innerRotated = innerVertices.map(rotatePoint);
 
-      for (let c = 0; c < cylinderCount; c++) {
-        const text = words[c % words.length];
-        const repeatedText = (text + '      ').repeat(3); 
-        const yCenter = spacing * (c + 1);
+      const outerProjected = outerRotated.map(p => project(p.x, p.y, p.z));
+      const innerProjected = innerRotated.map(p => project(p.x, p.y, p.z));
 
-        const radius = width * 0.32; 
-        const charCount = repeatedText.length;
-        const angleStep = (Math.PI * 2) / charCount;
+      // Draw subtle construction background wireframe connections
+      ctx.lineWidth = 1;
+      const drawWireframeLines = (proj: { x: number; y: number; scale: number }[]) => {
+        edges.forEach(edge => {
+          const ptA = proj[edge.a];
+          const ptB = proj[edge.b];
+          ctx.beginPath();
+          ctx.moveTo(ptA.x, ptA.y);
+          ctx.lineTo(ptB.x, ptB.y);
+          // Faint tech blue/cyan lines
+          ctx.strokeStyle = 'rgba(0, 240, 255, 0.04)';
+          ctx.stroke();
+        });
+      };
+      drawWireframeLines(outerProjected);
+      drawWireframeLines(innerProjected);
 
-        // Alternate rotation direction
-        const direction = c % 2 === 0 ? 1 : -1;
-        const currentAngleOffset = angleOffset * direction;
+      // Collect all character drawings from all edges
+      interface CharItem {
+        char: string;
+        x: number;
+        y: number;
+        scale: number;
+        opacity: number;
+        z: number;
+        colorType: 'cyan' | 'pink' | 'yellow' | 'white';
+      }
 
-        const charsToDraw: { char: string; x: number; y: number; scale: number; opacity: number; z: number }[] = [];
+      const charList: CharItem[] = [];
 
-        for (let i = 0; i < charCount; i++) {
-          const char = repeatedText[i];
-          const angle = i * angleStep + currentAngleOffset;
+      const populateChars = (
+        rotatedVerts: { x: number; y: number; z: number }[],
+        edgesList: typeof edges,
+        isOuter: boolean
+      ) => {
+        edgesList.forEach((edge, index) => {
+          const vA = rotatedVerts[edge.a];
+          const vB = rotatedVerts[edge.b];
+          
+          // Form repeating text strings along edges
+          const edgeText = ` ${edge.text} `.repeat(2);
+          const N = edgeText.length;
 
-          // 3D Cylinder coordinates (rotating around Y axis)
-          const cx = Math.sin(angle) * radius;
-          const cz = Math.cos(angle) * radius; // depth Z
+          for (let i = 0; i < N; i++) {
+            const char = edgeText[i];
+            if (char === ' ') continue;
 
-          // Rotate around X axis to apply tilt
-          const radTilt = (tilt * Math.PI) / 180;
-          const ry = -cz * Math.sin(radTilt);
-          const rz = cz * Math.cos(radTilt);
+            // Interpolate 3D coordinates between A and B
+            const t = i / (N - 1);
+            const x3d = vA.x + (vB.x - vA.x) * t;
+            const y3d = vA.y + (vB.y - vA.y) * t;
+            const z3d = vA.z + (vB.z - vA.z) * t;
 
-          // 3D Perspective projection
-          const fov = 500;
-          const scale = fov / (fov - rz);
+            // Project interpolated point
+            const proj = project(x3d, y3d, z3d);
 
-          const screenX = width / 2 + cx * scale;
-          const screenY = yCenter + ry * scale;
+            // Compute depth factor (Z range is roughly -outerSize*1.7 to +outerSize*1.7)
+            const maxRadius = outerSize * 1.8;
+            const normalizedZ = (z3d + maxRadius) / (maxRadius * 2);
+            
+            // Opacity range: Faint in back, bright in front
+            const opacity = 0.03 + Math.max(0, Math.min(1, normalizedZ)) * 0.35;
 
-          // Normalize depth to 0 (back) -> 1 (front)
-          const normalizedZ = (rz + radius) / (radius * 2);
-          const opacity = 0.03 + normalizedZ * 0.32; // front elements are brighter
+            // Color palette allocation based on depth and layer
+            let colorType: 'cyan' | 'pink' | 'yellow' | 'white' = 'white';
+            if (z3d > maxRadius * 0.1) {
+              if (isOuter) {
+                colorType = index % 2 === 0 ? 'cyan' : 'pink';
+              } else {
+                colorType = 'yellow';
+              }
+            }
 
-          charsToDraw.push({
-            char,
-            x: screenX,
-            y: screenY,
-            scale,
-            opacity,
-            z: rz
-          });
+            charList.push({
+              char,
+              x: proj.x,
+              y: proj.y,
+              scale: proj.scale,
+              opacity,
+              z: z3d,
+              colorType
+            });
+          }
+        });
+      };
+
+      populateChars(outerRotated, edges, true);
+      populateChars(innerRotated, innerEdges, false);
+
+      // Sort characters by depth Z (Painters algorithm) to overlap correctly
+      charList.sort((a, b) => a.z - b.z);
+
+      // Render characters
+      charList.forEach(item => {
+        ctx.save();
+        ctx.translate(item.x, item.y);
+        ctx.scale(item.scale, item.scale);
+
+        // Styling based on colorType
+        if (item.colorType === 'cyan') {
+          ctx.fillStyle = `rgba(0, 240, 255, ${item.opacity * 1.6})`;
+        } else if (item.colorType === 'pink') {
+          ctx.fillStyle = `rgba(255, 0, 85, ${item.opacity * 1.6})`;
+        } else if (item.colorType === 'yellow') {
+          ctx.fillStyle = `rgba(214, 255, 0, ${item.opacity * 1.6})`;
+        } else {
+          ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
         }
 
-        // Sort by Z to draw back characters first (painter's algorithm)
-        charsToDraw.sort((a, b) => a.z - b.z);
-
-        // Render sorted characters
-        charsToDraw.forEach(item => {
-          ctx.save();
-          ctx.translate(item.x, item.y);
-          ctx.scale(item.scale, item.scale);
-          
-          const isFront = item.z > 0;
-          const frontThreshold = radius * 0.35;
-
-          if (isFront && item.z > frontThreshold) {
-            // Apply vibrant themed colors on the closest elements
-            const colorProgress = (item.z - frontThreshold) / (radius - frontThreshold);
-            if (c % 3 === 0) {
-              ctx.fillStyle = `rgba(0, 240, 255, ${item.opacity * (1 + colorProgress * 0.5)})`; // cyan
-            } else if (c % 3 === 1) {
-              ctx.fillStyle = `rgba(255, 0, 85, ${item.opacity * (1 + colorProgress * 0.5)})`; // pink
-            } else {
-              ctx.fillStyle = `rgba(214, 255, 0, ${item.opacity * (1 + colorProgress * 0.5)})`; // yellow
-            }
-          } else {
-            // Neutral styling for background/depth characters
-            ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
-          }
-
-          ctx.font = '900 80px "League Gothic", sans-serif';
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'middle';
-          ctx.fillText(item.char, 0, 0);
-          ctx.restore();
-        });
-      }
+        ctx.font = '900 17px "League Gothic", sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(item.char, 0, 0);
+        ctx.restore();
+      });
 
       animationId = requestAnimationFrame(render);
     };
