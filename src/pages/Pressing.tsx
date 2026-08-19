@@ -103,12 +103,14 @@ export const Pressing = () => {
 
         {/* Krakatoa Logo */}
         <div className="animate-float-down text-center">
-          <img 
-            src="/krakatoa_logo.png" 
-            alt="Krakatoa Records" 
-            className="h-20 md:h-28 object-contain filter invert drop-shadow-[4px_4px_0_rgba(255,222,0,1)]" 
-            style={{ mixBlendMode: 'screen' }}
-          />
+          <div className="inline-block border-4 border-white bg-black px-6 py-4 shadow-[8px_8px_0_#ffffff] rotate-2">
+            <img 
+              src="/krakatoa_logo.png" 
+              alt="Krakatoa Records" 
+              className="h-16 md:h-20 object-contain filter invert" 
+              style={{ mixBlendMode: 'screen' }}
+            />
+          </div>
         </div>
       </div>
 
