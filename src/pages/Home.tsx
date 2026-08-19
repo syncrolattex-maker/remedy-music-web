@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'motion/react';
+import { KineticTypography } from '../components/KineticTypography';
 
 // Components
 const ParallaxImage = ({ src, yOffset = 50, className = "" }: { src: string, yOffset?: number, className?: string }) => {
@@ -75,9 +76,10 @@ export const Home = () => {
         onMouseLeave={() => setHeroHovered(false)}
         onMouseMove={handleHeroMouseMove}
       >
-        {/* Background Image */}
+        {/* Background Image & Kinetic Typography */}
         <div className="absolute inset-0 z-0">
-          <img src="/home/erick_bw.jpg" alt="Erick B&W" className="w-full h-full object-cover opacity-40 grayscale" />
+          <img src="/home/erick_bw.jpg" alt="Erick B&W" className="w-full h-full object-cover opacity-20 grayscale" />
+          <KineticTypography />
         </div>
         <div className="z-10 text-center pointer-events-none mix-blend-difference">
           <motion.h1 
