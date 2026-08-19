@@ -29,7 +29,7 @@ export const KineticTypography: React.FC = () => {
     };
     window.addEventListener('mousemove', handleMouseMove);
 
-    // Initial mouse positions in center
+    // Initial mouse positions
     mouseRef.current.targetX = width / 2;
     mouseRef.current.targetY = height / 2;
     mouseRef.current.x = width / 2;
@@ -39,95 +39,113 @@ export const KineticTypography: React.FC = () => {
       'REMEDY MUSIC VLC',
       'SAMPLING CULTURE',
       'DIGGIN THE CRATES',
-      'UNDERGROUND HIP HOP',
+      'UNDERGROUND RAP',
       'RAW BREAKS & BEATS',
-      'ANALOG SOUND LAB',
       'KRAKATOA RECORDS',
       'INDEPENDENT SINCE 2020'
     ];
 
-    let time = 0;
+    let angleOffset = 0;
 
     const render = () => {
-      time += 0.015;
-
-      // Easing for smooth mouse interaction
       const mouse = mouseRef.current;
-      mouse.x += (mouse.targetX - mouse.x) * 0.08;
-      mouse.y += (mouse.targetY - mouse.y) * 0.08;
+      mouse.x += (mouse.targetX - mouse.x) * 0.05;
+      mouse.y += (mouse.targetY - mouse.y) * 0.05;
 
       ctx.clearRect(0, 0, width, height);
 
-      const rowCount = 7;
-      const rowSpacing = height / (rowCount + 1);
+      // Speed changes with mouse X position
+      const speedFactor = 1 + (mouse.x - width / 2) / (width / 2) * 1.5;
+      angleOffset += 0.004 * speedFactor;
 
-      for (let r = 0; r < rowCount; r++) {
-        const word = words[r % words.length];
-        // Repeating text pattern
-        const repeatedText = (word + '       ').repeat(6);
-        const yBase = rowSpacing * (r + 1);
+      // Tilt changes with mouse Y position (angle in degrees)
+      const tilt = (mouse.y - height / 2) / (height / 2) * 35; 
 
-        ctx.font = '900 85px "League Gothic", sans-serif';
-        ctx.textBaseline = 'middle';
+      const cylinderCount = 5;
+      const spacing = height / (cylinderCount + 1);
 
-        const direction = r % 2 === 0 ? 1 : -1;
-        // Scroll offset
-        const scrollSpeed = 40;
-        const scrollOffset = (time * scrollSpeed * direction) % width;
+      for (let c = 0; c < cylinderCount; c++) {
+        const text = words[c % words.length];
+        const repeatedText = (text + '      ').repeat(3); 
+        const yCenter = spacing * (c + 1);
 
-        let currentX = -width / 2 + scrollOffset;
-        if (direction === -1) {
-          currentX = width * 1.5 - scrollOffset;
-        }
+        const radius = width * 0.32; 
+        const charCount = repeatedText.length;
+        const angleStep = (Math.PI * 2) / charCount;
 
-        // Loop over the repeated string
-        for (let i = 0; i < repeatedText.length; i++) {
+        // Alternate rotation direction
+        const direction = c % 2 === 0 ? 1 : -1;
+        const currentAngleOffset = angleOffset * direction;
+
+        const charsToDraw: { char: string; x: number; y: number; scale: number; opacity: number; z: number }[] = [];
+
+        for (let i = 0; i < charCount; i++) {
           const char = repeatedText[i];
-          const charWidth = ctx.measureText(char).width;
+          const angle = i * angleStep + currentAngleOffset;
 
-          // Wrap drawing coordinates
-          let drawX = currentX;
-          if (drawX < -width) {
-            drawX += width * 2;
-          } else if (drawX > width * 2) {
-            drawX -= width * 2;
-          }
+          // 3D Cylinder coordinates (rotating around Y axis)
+          const cx = Math.sin(angle) * radius;
+          const cz = Math.cos(angle) * radius; // depth Z
 
-          // Sine wave displacement
-          const waveFrequency = 0.0035;
-          const waveAmplitude = 30;
-          const wave = Math.sin(drawX * waveFrequency + time * 2.5 + r) * waveAmplitude;
-          let drawY = yBase + wave;
+          // Rotate around X axis to apply tilt
+          const radTilt = (tilt * Math.PI) / 180;
+          const ry = -cz * Math.sin(radTilt);
+          const rz = cz * Math.cos(radTilt);
 
-          // Mouse repulsion force
-          const dx = drawX - mouse.x;
-          const dy = drawY - mouse.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          const maxDist = 200;
+          // 3D Perspective projection
+          const fov = 500;
+          const scale = fov / (fov - rz);
 
-          if (dist < maxDist) {
-            const force = (maxDist - dist) / maxDist; // Eased force between 0 and 1
-            const angle = Math.atan2(dy, dx);
-            const pushDist = force * 60;
-            drawX += Math.cos(angle) * pushDist;
-            drawY += Math.sin(angle) * pushDist;
+          const screenX = width / 2 + cx * scale;
+          const screenY = yCenter + ry * scale;
 
-            // Shift color to bright cyan on mouse hover
-            ctx.fillStyle = `rgba(0, 240, 255, ${0.12 + force * 0.78})`;
-          } else {
-            // Default row styling using Remedy palette
-            if (r % 3 === 0) {
-              ctx.fillStyle = 'rgba(214, 255, 0, 0.14)'; // acid yellow
-            } else if (r % 3 === 1) {
-              ctx.fillStyle = 'rgba(255, 0, 85, 0.12)'; // neon pink
-            } else {
-              ctx.fillStyle = 'rgba(255, 255, 255, 0.07)'; // faint white
-            }
-          }
+          // Normalize depth to 0 (back) -> 1 (front)
+          const normalizedZ = (rz + radius) / (radius * 2);
+          const opacity = 0.03 + normalizedZ * 0.32; // front elements are brighter
 
-          ctx.fillText(char, drawX, drawY);
-          currentX += charWidth;
+          charsToDraw.push({
+            char,
+            x: screenX,
+            y: screenY,
+            scale,
+            opacity,
+            z: rz
+          });
         }
+
+        // Sort by Z to draw back characters first (painter's algorithm)
+        charsToDraw.sort((a, b) => a.z - b.z);
+
+        // Render sorted characters
+        charsToDraw.forEach(item => {
+          ctx.save();
+          ctx.translate(item.x, item.y);
+          ctx.scale(item.scale, item.scale);
+          
+          const isFront = item.z > 0;
+          const frontThreshold = radius * 0.35;
+
+          if (isFront && item.z > frontThreshold) {
+            // Apply vibrant themed colors on the closest elements
+            const colorProgress = (item.z - frontThreshold) / (radius - frontThreshold);
+            if (c % 3 === 0) {
+              ctx.fillStyle = `rgba(0, 240, 255, ${item.opacity * (1 + colorProgress * 0.5)})`; // cyan
+            } else if (c % 3 === 1) {
+              ctx.fillStyle = `rgba(255, 0, 85, ${item.opacity * (1 + colorProgress * 0.5)})`; // pink
+            } else {
+              ctx.fillStyle = `rgba(214, 255, 0, ${item.opacity * (1 + colorProgress * 0.5)})`; // yellow
+            }
+          } else {
+            // Neutral styling for background/depth characters
+            ctx.fillStyle = `rgba(255, 255, 255, ${item.opacity})`;
+          }
+
+          ctx.font = '900 80px "League Gothic", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText(item.char, 0, 0);
+          ctx.restore();
+        });
       }
 
       animationId = requestAnimationFrame(render);
