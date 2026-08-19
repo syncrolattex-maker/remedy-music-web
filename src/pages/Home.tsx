@@ -25,7 +25,7 @@ const Marquee = ({ text }: { text: string }) => {
       <motion.div
         className="text-6xl md:text-8xl font-black font-heading text-zinc-100 uppercase tracking-tighter shrink-0 mr-8"
         animate={{ x: ["0%", "-100%"] }}
-        transition={{ repeat: Infinity, ease: "linear", duration: 15 }}
+        transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
         style={{ display: 'inline-block', whiteSpace: 'nowrap' }}
       >
         {text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;
@@ -33,7 +33,7 @@ const Marquee = ({ text }: { text: string }) => {
       <motion.div
         className="text-6xl md:text-8xl font-black font-heading text-zinc-100 uppercase tracking-tighter shrink-0"
         animate={{ x: ["0%", "-100%"] }}
-        transition={{ repeat: Infinity, ease: "linear", duration: 15 }}
+        transition={{ repeat: Infinity, ease: "linear", duration: 35 }}
         style={{ display: 'inline-block', whiteSpace: 'nowrap' }}
       >
         {text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;{text}&nbsp;&nbsp;&nbsp;&nbsp;
