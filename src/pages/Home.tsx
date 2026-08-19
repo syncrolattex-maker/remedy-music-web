@@ -154,7 +154,7 @@ export const Home = () => {
               THE<br/>SOUND<br/>LAB.
             </h2>
             <p className="font-display text-xl font-bold max-w-md border-l-4 border-black pl-4">
-              Analog gear, classic breaks, and that raw underground essence. We cut out the noise and leave the groove intact.
+              Sampling Culture: Analog gear, classic breaks, and that raw underground essence. We cut out the noise and leave the groove intact.
             </p>
           </div>
 
