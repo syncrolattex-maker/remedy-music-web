@@ -102,7 +102,7 @@ export const Home = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
           >
-            True Hip Hop & Breaks
+            Independent Music Since 2020
           </motion.p>
         </div>
 
@@ -128,7 +128,7 @@ export const Home = () => {
 
       {/* SECTION B: DIGGIN' & CULTURE */}
       <section className="w-full py-24 bg-[#050505]">
-        <Marquee text="Diggin' in the Crates //" />
+        <Marquee text="Diggin - Soul - Funk - Hip Hop - Breaks - Cut Up/ Dj - Underground Rap - Experimental Jazz //" />
         
         <div className="container mx-auto px-4 mt-24">
           <div className="relative w-full h-[800px]">
