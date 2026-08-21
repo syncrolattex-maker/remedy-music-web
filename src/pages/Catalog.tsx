@@ -169,6 +169,20 @@ const catalogData: Track[] = [
       'B2 Tempus Fugit.'
     ]
   },
+  {
+    id: 'rap-5',
+    title: 'PREORDER DJ Pack (2 Copies)',
+    artist: 'Remedy Music VLC',
+    format: 'vinyl',
+    audioUrl: '',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/merch/preorder-dj-pack-2-copies-50-packs',
+    price: 20.00,
+    color: '#FAF6EE',
+    tracks: [
+      'DJ Pack (2 Copies) 50 Packs Only',
+      'Get two copies and save 20% on your order.'
+    ]
+  },
 
   // Tape Series (Cassette)
   {
@@ -244,7 +258,8 @@ const catalogData: Track[] = [
     title: 'Lliure Albir',
     artist: 'Jaime Reas',
     format: 'cassette',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+    audioUrl: '/catalog/lliure_albir_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/jaime-reas-lliure-albir',
     price: 12.00,
     color: '#FFF8E1',
     tracks: [
@@ -385,7 +400,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'rap-4' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'rap-4' || track.id === 'rap-5' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'tape-4' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -404,6 +419,8 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'beat-2') return '/catalog/safary_beats_cover.png';
     if (track.id === 'beat-3') return '/catalog/wall_of_shadows_cover.jpg';
     if (track.id === 'rap-4') return '/catalog/tempus_fugit_cover.jpg';
+    if (track.id === 'rap-5') return '/catalog/dj_pack_cover.jpg';
+    if (track.id === 'tape-4') return '/catalog/lliure_albir_cover.jpg';
     return '';
   };
 
