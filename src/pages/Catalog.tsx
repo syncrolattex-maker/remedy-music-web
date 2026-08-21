@@ -18,7 +18,7 @@ const catalogData: Track[] = [
     artist: 'Dj Rosvil',
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview124/v4/6b/ec/39/6bec391f-bcec-0998-1069-f14ef0a7403a/mzaf_6907891805952860261.plus.aac.p.m4a',
-    price: 15.00,
+    price: 12.00,
     color: '#FFE6F0', // pastel pink
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/that-s-the-way-ep',
     tracks: [
@@ -34,7 +34,7 @@ const catalogData: Track[] = [
     artist: 'Freedust feat. Mabreezee',
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/d6/fc/f2/d6fcf221-94f1-d956-0d2c-a6c2193a6b58/mzaf_3663461496267727358.plus.aac.p.m4a',
-    price: 15.00,
+    price: 12.00,
     color: '#FAF6EE', // cream
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/freedust-feat-mabreeze',
     tracks: [
@@ -46,10 +46,10 @@ const catalogData: Track[] = [
   {
     id: '45-3',
     title: 'Nuevos Capitales',
-    artist: 'Dj Rosvil',
+    artist: 'Compro Oro',
     format: 'vinyl',
     audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
-    price: 18.00,
+    price: 14.50,
     color: '#2A464A', // dark teal from cover
     tracks: [
       'A1 Vocal',
@@ -63,8 +63,24 @@ const catalogData: Track[] = [
     artist: 'Dj Rosvil',
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/5c/6c/86/5c6c861d-b2ff-b840-74a5-41b5943b9091/mzaf_15145812101927049115.plus.aac.p.m4a',
-    price: 15.00,
+    price: 12.50,
     color: '#FFF9E6' // pastel yellow
+  },
+  {
+    id: '45-5',
+    title: 'Voyager EP',
+    artist: 'Freedust',
+    format: 'vinyl',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    price: 12.50,
+    color: '#E6FFFA', // pastel mint
+    tracks: [
+      'Home (feat. Ni\'elle)',
+      'Roll Off Me',
+      'Come With Me (feat. Saphie Wells)',
+      'Moving On (feat. Dorothy K)',
+      'Playing With My Heart'
+    ]
   },
   
   // Raps (Vinyl 12")
@@ -74,7 +90,7 @@ const catalogData: Track[] = [
     artist: 'Erick Hervé',
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview126/v4/15/56/92/15569243-e3c4-ab4a-8989-755e6a2b446c/mzaf_11098362903754451430.plus.aac.p.m4a',
-    price: 30.00,
+    price: 25.00,
     color: '#E6F7FF', // pastel blue
     tracks: [
       'MENOS 20',
@@ -93,7 +109,7 @@ const catalogData: Track[] = [
     artist: 'Chicoes3, Dj Taktel & Cómodo',
     format: 'vinyl',
     audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/a2/ba/cc/a2baccfc-1cc1-96b2-d66b-e0f0ced263bf/mzaf_14650790324370677972.plus.aac.p.m4a',
-    price: 28.00,
+    price: 25.00,
     color: '#FAF6EE', // cream
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/safary',
     tracks: [
@@ -136,6 +152,23 @@ const catalogData: Track[] = [
       'Décembre'
     ]
   },
+  {
+    id: 'rap-4',
+    title: 'Tempus Fugit',
+    artist: 'Golden Samplers (feat. Dj Taktel)',
+    format: 'vinyl',
+    audioUrl: '/catalog/tempus_fugit_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/tempus-fugit',
+    price: 25.00,
+    color: '#D8CEBC', // sand/beige
+    tracks: [
+      'A1 Everything Changes.',
+      'A2 Backwash.',
+      'A3 Bitter.',
+      'B1 Loop Playback.',
+      'B2 Tempus Fugit.'
+    ]
+  },
 
   // Tape Series (Cassette)
   {
@@ -144,7 +177,7 @@ const catalogData: Track[] = [
     artist: 'Dj Taktel & Cómodo',
     format: 'cassette',
     audioUrl: '/catalog/control_remoto_preview.mp3',
-    price: 10.00,
+    price: 12.00,
     color: '#FFF3E0', // warm orange tint
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/control-remoto',
     tracks: [
@@ -191,7 +224,7 @@ const catalogData: Track[] = [
     artist: 'Geometria Variable (Tino & Eddie)',
     format: 'cassette',
     audioUrl: '/catalog/geometria_variable_preview.mp3',
-    price: 10.00,
+    price: 12.00,
     color: '#EDE7F6', // lavender purple matching cassette shell
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/geometria-variable',
     tracks: [
@@ -206,6 +239,25 @@ const catalogData: Track[] = [
       'FUSTES'
     ]
   },
+  {
+    id: 'tape-4',
+    title: 'Lliure Albir',
+    artist: 'Jaime Reas',
+    format: 'cassette',
+    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3',
+    price: 12.00,
+    color: '#FFF8E1',
+    tracks: [
+      'Lliure Albir (Intro)',
+      'Gaudí (feat. Sudakillah)',
+      'No s\'assaja (feat. Atari Hanzo)',
+      'Vibes',
+      'Otros Nortes',
+      'Visión Hemisférica',
+      'Lotus',
+      '100tovolando'
+    ]
+  },
 
   // Beats (Sampler / MPC)
   {
@@ -215,7 +267,7 @@ const catalogData: Track[] = [
     format: 'beats',
     audioUrl: '/catalog/sampled_head_preview.mp3',
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/sampled-head-argent-rock-69-79',
-    price: 10.00,
+    price: 12.00,
     color: '#D91C80', // pinkish purple
     tracks: [
       'A1 Argentrock 69-79',
@@ -231,7 +283,7 @@ const catalogData: Track[] = [
     format: 'beats',
     audioUrl: '/catalog/safary_beats_preview.mp3',
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/safary-beats',
-    price: 10.00,
+    price: 12.00,
     color: '#E30A17', // red
     tracks: [
       'A1 Safary (Instrumental)',
@@ -247,7 +299,7 @@ const catalogData: Track[] = [
     format: 'beats',
     audioUrl: '/catalog/wall_of_shadows_preview.mp3',
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/wall-of-shadows-2',
-    price: 12.00,
+    price: 23.00,
     color: '#93EEA7', // glitch green
     tracks: [
       'A1 Hi!! Producers.',
@@ -255,23 +307,6 @@ const catalogData: Track[] = [
       'A3 Like Past Wind.',
       'B1 Italian Shadow.',
       'B2 Lake.'
-    ]
-  },
-  {
-    id: 'beat-4',
-    title: 'Tempus Fugit',
-    artist: 'Golden Samplers (feat. Dj Taktel)',
-    format: 'beats',
-    audioUrl: '/catalog/tempus_fugit_preview.mp3',
-    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/tempus-fugit',
-    price: 10.00,
-    color: '#D8CEBC', // sand/beige
-    tracks: [
-      'A1 Everything Changes.',
-      'A2 Backwash.',
-      'A3 Bitter.',
-      'B1 Loop Playback.',
-      'B2 Tempus Fugit.'
     ]
   }
 ];
@@ -350,7 +385,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3' || track.id === 'beat-4';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'rap-4' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -368,7 +403,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'beat-1') return '/catalog/sampled_head_cover.jpg';
     if (track.id === 'beat-2') return '/catalog/safary_beats_cover.png';
     if (track.id === 'beat-3') return '/catalog/wall_of_shadows_cover.jpg';
-    if (track.id === 'beat-4') return '/catalog/tempus_fugit_cover.jpg';
+    if (track.id === 'rap-4') return '/catalog/tempus_fugit_cover.jpg';
     return '';
   };
 
