@@ -48,13 +48,14 @@ const catalogData: Track[] = [
     title: 'Nuevos Capitales',
     artist: 'Compro Oro',
     format: 'vinyl',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3',
+    audioUrl: '/catalog/compro_oro_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/compro-oro-nuevos-capitales-ep',
     price: 14.50,
     color: '#2A464A', // dark teal from cover
     tracks: [
-      'A1 Vocal',
-      'B1 Instrumental',
-      'B2 Bonus Beats'
+      'Nuevos Capitales',
+      'Nuevos Capitales Instrumental',
+      'Bonus Beats Edit by Dj Rosvil'
     ]
   },
   {
@@ -435,6 +436,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === '45-2') {
       if (selectedVariant === 1) return '/catalog/freedust_1.jpg';
       if (selectedVariant === 2) return '/catalog/freedust_2.jpg';
+    }
+    if (track.id === '45-3') {
+      return '/catalog/compro_oro_record.png';
     }
     if (track.id === 'rap-2') {
       return '/catalog/safary_record.jpg';
