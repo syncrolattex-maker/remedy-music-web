@@ -63,9 +63,15 @@ const catalogData: Track[] = [
     title: 'We can fly',
     artist: 'Dj Rosvil',
     format: 'vinyl',
-    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/5c/6c/86/5c6c861d-b2ff-b840-74a5-41b5943b9091/mzaf_15145812101927049115.plus.aac.p.m4a',
+    audioUrl: '/catalog/we_can_fly_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/dj-rosvil-we-can-fly-ep',
     price: 12.50,
-    color: '#FFF9E6' // pastel yellow
+    color: '#FFF9E6', // pastel yellow
+    tracks: [
+      'A1 - We Can Fly',
+      'B1 - Dub Version',
+      'B2 - Borja\'s Break'
+    ]
   },
   {
     id: '45-5',
