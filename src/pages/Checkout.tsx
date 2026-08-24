@@ -45,6 +45,78 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
   // PayPal Payment details
   const [transactionId, setTransactionId] = useState('');
 
+  // EmailJS API sender to notify owner and customer
+  const sendEmails = async (
+    itemName: string,
+    customerName: string,
+    customerEmail: string,
+    customerPhone: string,
+    shippingAddress: string,
+    shippingCity: string,
+    shippingZip: string,
+    shippingCountry: string,
+    price: number,
+    txId: string
+  ) => {
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateOwnerId = import.meta.env.VITE_EMAILJS_TEMPLATE_OWNER_ID;
+    const templateClientId = import.meta.env.VITE_EMAILJS_TEMPLATE_CLIENT_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateOwnerId || !templateClientId || !publicKey) {
+      console.warn('EmailJS environment variables are not configured. Email transmissions skipped.');
+      return;
+    }
+
+    const templateParams = {
+      item_name: itemName,
+      customer_name: customerName,
+      customer_email: customerEmail,
+      customer_phone: customerPhone,
+      shipping_address: shippingAddress,
+      shipping_city: shippingCity,
+      shipping_zip: shippingZip,
+      shipping_country: shippingCountry,
+      total_price: `${price.toFixed(2)} EUR`,
+      transaction_id: txId,
+      owner_email: 'remedymusicvlc@gmail.com'
+    };
+
+    // Send email to owner
+    try {
+      await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateOwnerId,
+          user_id: publicKey,
+          template_params: templateParams
+        })
+      });
+      console.log('EmailJS: Purchase notification sent to owner.');
+    } catch (err) {
+      console.error('EmailJS: Error notifying owner:', err);
+    }
+
+    // Send email to client
+    try {
+      await fetch('https://api.emailjs.com/api/v1.0/email/send', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          service_id: serviceId,
+          template_id: templateClientId,
+          user_id: publicKey,
+          template_params: templateParams
+        })
+      });
+      console.log('EmailJS: Purchase receipt sent to customer.');
+    } catch (err) {
+      console.error('EmailJS: Error notifying customer:', err);
+    }
+  };
+
   // Recover session after PayPal redirect
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -70,8 +142,27 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
           if (storedPostalCode) setHomePostalCode(storedPostalCode);
           if (storedCountry) setCountry(storedCountry);
           
-          setTransactionId(params.get('tx') || `PAYID-PP-${Math.random().toString(36).substring(2, 9).toUpperCase()}`);
+          const txVal = params.get('tx') || `PAYID-PP-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+          setTransactionId(txVal);
           setStep(3);
+          
+          // Send emails once
+          const emailsSentKey = `remedy_emails_sent_${txVal}`;
+          if (!sessionStorage.getItem(emailsSentKey)) {
+            sessionStorage.setItem(emailsSentKey, 'true');
+            sendEmails(
+              `${parsedItem.track.title} (${parsedItem.edition})`,
+              storedName || '',
+              storedEmail || '',
+              storedPhone || '',
+              storedAddress || '',
+              storedCity || '',
+              storedPostalCode || '',
+              storedCountry || '',
+              parsedItem.track.price,
+              txVal
+            );
+          }
           
           // Clear cart in parent state
           onClearCheckout();
