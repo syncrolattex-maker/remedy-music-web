@@ -267,6 +267,9 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
 
                 {/* HOME SHIPPING METHOD */}
                 <div className="flex flex-col gap-4 border-2 border-zinc-200 p-4 bg-zinc-50 mt-4">
+                  <div className="bg-[#FFF9E6] border-2 border-black p-3 text-black font-mono text-[10px] uppercase leading-relaxed mb-1 shadow-[2px_2px_0_0_#000]">
+                    <strong>Nota de envío (Correos.es):</strong> El envío se tramitará manualmente a través de <strong>Correos España (Correos.es)</strong>. Las tarifas definitivas de envío están pendientes de confirmar y se acordarán contigo por email o teléfono tras la compra.
+                  </div>
                   <span className="font-mono text-[10px] text-zinc-600 uppercase font-bold tracking-wider">// Dirección de envío postal:</span>
                     
                     <div className="flex flex-col gap-3">
@@ -409,8 +412,8 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                   </div>
 
                   <div className="flex flex-col gap-1.5 pb-2 border-b border-zinc-200">
-                    <span className="font-bold text-secondary">ENTREGA A DOMICILIO:</span>
-                    <span>Domicilio del Cliente:</span>
+                    <span className="font-bold text-secondary">ENVÍO DOMICILIO (CORREOS.ES):</span>
+                    <span>Tarifa de envío: Pendiente de confirmar</span>
                     <span>{address}</span>
                     <span>{homePostalCode} {city}, {country}</span>
                   </div>
@@ -422,7 +425,7 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                 </div>
 
                 <p className="font-mono text-[10px] text-zinc-500 max-w-sm">
-                  InPost enviará un SMS con el código PIN de apertura y las notificaciones en cuanto el paquete sea depositado en el locker seleccionado.
+                  Correos España (Correos.es) gestionará el envío. Nos pondremos en contacto contigo por email o teléfono para coordinar la tarifa final de envío y te facilitaremos el código de seguimiento postal en cuanto el paquete se entregue en la oficina de Correos.
                 </p>
 
                 <button
@@ -476,11 +479,11 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
                     <span>{localCheckoutItem.track.price.toFixed(2)} EUR</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-zinc-600">Envío InPost:</span>
-                    <span className="text-green-600 font-bold">GRATIS</span>
+                    <span className="text-zinc-600">Envío (Correos.es):</span>
+                    <span className="text-[#FF0055] font-bold uppercase tracking-wider">A confirmar</span>
                   </div>
                   <div className="flex justify-between border-t border-zinc-400 pt-2 font-bold text-sm mt-1.5">
-                    <span>Total Pedido:</span>
+                    <span>Total (Excl. Envío):</span>
                     <span className="text-[#FF0055]">{localCheckoutItem.track.price.toFixed(2)} EUR</span>
                   </div>
                 </div>
