@@ -23,7 +23,7 @@ export const Shipping = () => {
         {/* CONTENT BUBBLES */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           
-          {/* INPOST BLOCK */}
+          {/* CORREOS BLOCK */}
           <div className="brutalist-border bg-white p-6 md:p-8 flex flex-col gap-4 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFDE00] rounded-full blur-3xl opacity-20 group-hover:opacity-40 transition-opacity"></div>
             
@@ -31,15 +31,15 @@ export const Shipping = () => {
               <div className="p-3 bg-[#FFDE00] border-3 border-black shadow-[4px_4px_0_0_#000]">
                 <MapPin className="w-6 h-6 stroke-[2.5]" />
               </div>
-              <h2 className="font-heading text-3xl uppercase tracking-wide">Red InPost</h2>
+              <h2 className="font-heading text-3xl uppercase tracking-wide">Correos España</h2>
             </div>
             
             <div className="font-mono text-sm leading-relaxed flex flex-col gap-3">
               <p>
-                Todos nuestros envíos físicos se realizan a través de la red logística de <strong>InPost</strong> (Punto Pack y Lockers).
+                Todos nuestros envíos físicos se realizan a domicilio a través del servicio postal nacional de <strong>Correos España (Correos.es)</strong>.
               </p>
               <p>
-                Al realizar tu pedido en el Checkout, seleccionaremos el Punto Pack o Locker de InPost más cercano a tu código postal para que puedas recogerlo cuando mejor te venga, sin necesidad de esperar al repartidor en casa.
+                Una vez depositado el paquete en la oficina postal, te facilitaremos el código de seguimiento de Correos por correo electrónico o teléfono móvil para que puedas rastrear la entrega en tiempo real.
               </p>
             </div>
           </div>
@@ -57,19 +57,15 @@ export const Shipping = () => {
             
             <div className="font-mono text-sm leading-relaxed flex flex-col gap-4 mt-2">
               <p className="text-zinc-300">
-                El coste del envío varía en función del peso y volumen del formato físico que adquieras:
+                El coste del envío está <strong>por confirmar</strong> según las tarifas oficiales vigentes de Correos en el momento del envío (basado en peso y formato del disco):
               </p>
               
-              <ul className="flex flex-col gap-3">
-                <li className="flex justify-between items-center border-b border-zinc-700 pb-2">
-                  <span className="font-bold uppercase tracking-wider">Formatos Single / Cassette</span>
-                  <span className="text-lg font-bold text-[#FFDE00]">6.00 €</span>
-                </li>
-                <li className="flex justify-between items-center border-b border-zinc-700 pb-2">
-                  <span className="font-bold uppercase tracking-wider">Formatos LP (Vinilo 12")</span>
-                  <span className="text-lg font-bold text-[#FFDE00]">8.00 €</span>
-                </li>
-              </ul>
+              <div className="bg-zinc-900 border border-zinc-700 p-4 flex flex-col gap-2 rounded">
+                <span className="font-bold text-[#FFDE00] uppercase tracking-wider text-xs">Tarifa a Confirmar:</span>
+                <p className="text-zinc-400 text-xs">
+                  Tras realizar tu pedido, nos pondremos en contacto contigo por email o móvil para acordar la tarifa de envío definitiva antes de proceder con el envío postal.
+                </p>
+              </div>
             </div>
           </div>
         </div>
