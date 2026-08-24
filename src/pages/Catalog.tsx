@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { Play, Pause, CreditCard } from 'lucide-react';
 import { Track } from '../App';
 
@@ -773,6 +773,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 export const Catalog = ({ currentTrack, isPlaying, onPlayTrack, onBuyTrack }: CatalogProps) => {
   const { subfamily } = useParams<{ subfamily?: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const searchQuery = searchParams.get('search') || '';
   const filters = ['45s Club', 'Raps', 'Tape Series', 'Beats'];
 
   // Helper to map route parameter to catalog display filter string
@@ -807,7 +810,17 @@ export const Catalog = ({ currentTrack, isPlaying, onPlayTrack, onBuyTrack }: Ca
     return '45s Club';
   };
 
-  const filteredTracks = catalogData.filter(track => getSubfamily(track) === activeFilter);
+  const filteredTracks = catalogData.filter(track => {
+    if (getSubfamily(track) !== activeFilter) return false;
+    if (searchQuery.trim() !== '') {
+      const q = searchQuery.toLowerCase();
+      const titleMatch = track.title.toLowerCase().includes(q);
+      const artistMatch = track.artist.toLowerCase().includes(q);
+      const tracklistMatch = track.tracks ? track.tracks.some(t => t.toLowerCase().includes(q)) : false;
+      return titleMatch || artistMatch || tracklistMatch;
+    }
+    return true;
+  });
 
   const sections = [activeFilter];
 
@@ -831,7 +844,10 @@ export const Catalog = ({ currentTrack, isPlaying, onPlayTrack, onBuyTrack }: Ca
           return (
             <button
               key={f}
-              onClick={() => navigate(`/catalogo/${mapFilterToParam(f)}`)}
+              onClick={() => {
+                const queryParam = searchQuery ? `?search=${encodeURIComponent(searchQuery)}` : '';
+                navigate(`/catalogo/${mapFilterToParam(f)}${queryParam}`);
+              }}
               className={`px-6 py-3 border-4 border-black font-bold text-sm md:text-base transition-all select-none ${
                 isActive
                   ? 'bg-[#FFDE00] text-black -translate-y-1 shadow-[6px_6px_0px_0px_#000]'
@@ -846,39 +862,48 @@ export const Catalog = ({ currentTrack, isPlaying, onPlayTrack, onBuyTrack }: Ca
 
       {/* SECTIONS */}
       <div className="flex flex-col gap-16 z-10 relative max-w-7xl mx-auto">
-        {sections.map((section) => {
-          const sectionTracks = filteredTracks.filter(t => getSubfamily(t) === section);
-          if (sectionTracks.length === 0) return null;
+        {filteredTracks.length === 0 ? (
+          <div className="w-full max-w-md mx-auto brutalist-border p-8 bg-zinc-950 text-center mt-8">
+            <h3 className="font-heading text-2xl text-[#FFDE00] uppercase mb-2">Sin Resultados</h3>
+            <p className="font-mono text-xs text-zinc-400">
+              No hemos encontrado ningún disco que coincida con tu búsqueda: &quot;{searchQuery}&quot;
+            </p>
+          </div>
+        ) : (
+          sections.map((section) => {
+            const sectionTracks = filteredTracks.filter(t => getSubfamily(t) === section);
+            if (sectionTracks.length === 0) return null;
 
-          return (
-            <div key={section} className="flex flex-col gap-6">
-              {/* Section Heading */}
-              <div className="border-b-4 border-zinc-800 pb-2 flex items-center justify-between">
-                <h2 className="font-heading text-3xl md:text-5xl tracking-widest text-[#00F0FF] uppercase">
-                  // {section}
-                </h2>
-                <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest">
-                  {sectionTracks.length} items
-                </span>
+            return (
+              <div key={section} className="flex flex-col gap-6">
+                {/* Section Heading */}
+                <div className="border-b-4 border-zinc-800 pb-2 flex items-center justify-between">
+                  <h2 className="font-heading text-3xl md:text-5xl tracking-widest text-[#00F0FF] uppercase">
+                    // {section}
+                  </h2>
+                  <span className="font-mono text-xs text-zinc-500 uppercase tracking-widest">
+                    {sectionTracks.length} items
+                  </span>
+                </div>
+
+                {/* Tracks Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                  {sectionTracks.map((track) => (
+                    <AlbumCard
+                      key={track.id}
+                      track={track}
+                      currentTrack={currentTrack}
+                      isPlaying={isPlaying}
+                      onPlayTrack={onPlayTrack}
+                      onBuyTrack={onBuyTrack}
+                    />
+                  ))}
+                </div>
+
               </div>
-
-              {/* Tracks Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-                {sectionTracks.map((track) => (
-                  <AlbumCard
-                    key={track.id}
-                    track={track}
-                    currentTrack={currentTrack}
-                    isPlaying={isPlaying}
-                    onPlayTrack={onPlayTrack}
-                    onBuyTrack={onBuyTrack}
-                  />
-                ))}
-              </div>
-
-            </div>
-          );
-        })}
+            );
+          })
+        )}
       </div>
 
     </div>

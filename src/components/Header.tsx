@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
@@ -19,6 +19,29 @@ export const Header = () => {
   };
 
   const activePage = getActivePage();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Sync search input with URL search param
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    setSearchQuery(params.get('search') || '');
+  }, [location.search]);
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchQuery(value);
+    
+    let path = location.pathname;
+    if (!path.startsWith('/catalogo')) {
+      path = '/catalogo/45s-club';
+    }
+    
+    if (value.trim() !== '') {
+      navigate(`${path}?search=${encodeURIComponent(value)}`);
+    } else {
+      navigate(path);
+    }
+  };
 
   return (
     <header className="flex flex-wrap justify-between items-center p-6 border-b-4 border-black bg-white gap-4">
@@ -74,12 +97,27 @@ export const Header = () => {
         >
           Contacto
         </Link>
+        {isOpen && (
+          <div className="w-full mt-4 pt-4 border-t border-black/10">
+            <input 
+              type="search" 
+              placeholder="Buscar en el catálogo..." 
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="w-full p-2 bg-white text-black font-mono text-sm border-2 border-black outline-none" 
+            />
+          </div>
+        )}
       </nav>
 
       <div className="hidden md:flex gap-4 items-center flex-wrap justify-center">
-        <input type="search" placeholder="Search catalog..." className="brutalist-border p-2" />
-        <button className="font-bold">LOGIN</button>
-        <button className="brutalist-border bg-primary font-bold px-4 py-2">JOIN</button>
+        <input 
+          type="search" 
+          placeholder="Buscar en el catálogo..." 
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="brutalist-border p-2 bg-white text-black font-mono text-sm border-2 border-black outline-none focus:bg-zinc-50 w-64" 
+        />
       </div>
     </header>
   );
