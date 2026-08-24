@@ -71,15 +71,15 @@ const catalogData: Track[] = [
     title: 'Voyager EP',
     artist: 'Freedust',
     format: 'vinyl',
-    audioUrl: 'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3',
+    audioUrl: '/catalog/voyager_preview.mp3',
+    bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/preorder-freedust-voyager-ep',
     price: 12.50,
     color: '#E6FFFA', // pastel mint
     tracks: [
-      'Home (feat. Ni\'elle)',
-      'Roll Off Me',
-      'Come With Me (feat. Saphie Wells)',
-      'Moving On (feat. Dorothy K)',
-      'Playing With My Heart'
+      'A1 Deep Down In Your Soul (feat. Mabreezee)',
+      'A2 Boss Bae',
+      'B1 Are You Ready',
+      'B2 You Shakin\' Mama'
     ]
   },
   
