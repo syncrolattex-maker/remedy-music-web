@@ -77,9 +77,23 @@ export const Home = () => {
         onMouseMove={handleHeroMouseMove}
       >
         {/* Background Image & Kinetic Typography */}
-        <div className="absolute inset-0 z-0">
-          <img src="/home/erick_bw.jpg" alt="Erick B&W" className="w-full h-full object-cover opacity-20 grayscale" />
-          <KineticTypography />
+        <div className="absolute inset-0 z-0 bg-black">
+          <img src="/home/erick_bw.jpg" alt="Erick B&W" className="w-full h-full object-cover opacity-40 grayscale" />
+          {/* 
+            Para insertar tu animación exportada de Space Type Generator:
+            1. Guarda tu video en la carpeta: public/home/danger_loop.mp4
+            2. Descomenta esta etiqueta <video> de abajo:
+            
+            <video 
+              autoPlay 
+              loop 
+              muted 
+              playsInline 
+              className="absolute inset-0 w-full h-full object-cover opacity-30 pointer-events-none mix-blend-screen"
+            >
+              <source src="/home/danger_loop.mp4" type="video/mp4" />
+            </video>
+          */}
         </div>
         <div className="z-10 text-center pointer-events-none mix-blend-difference">
           <motion.h1 
