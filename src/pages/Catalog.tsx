@@ -400,7 +400,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
   // Variant state for "That's the way" (id: '45-1') and "What We've Lost" (id: '45-2')
   const hasVariants = track.id === '45-1' || track.id === '45-2';
-  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'rap-4' || track.id === 'rap-5' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'tape-4' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
+  const hasCustomSleeve = track.id === '45-1' || track.id === '45-2' || track.id === '45-3' || track.id === '45-4' || track.id === '45-5' || track.id === 'rap-1' || track.id === 'rap-2' || track.id === 'rap-3' || track.id === 'rap-4' || track.id === 'rap-5' || track.id === 'tape-1' || track.id === 'tape-2' || track.id === 'tape-3' || track.id === 'tape-4' || track.id === 'beat-1' || track.id === 'beat-2' || track.id === 'beat-3';
   const [selectedVariant, setSelectedVariant] = useState<number>(1);
   const [showTracklist, setShowTracklist] = useState<boolean>(false);
 
@@ -421,6 +421,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     if (track.id === 'rap-4') return '/catalog/tempus_fugit_cover.jpg';
     if (track.id === 'rap-5') return '/catalog/dj_pack_cover.jpg';
     if (track.id === 'tape-4') return '/catalog/lliure_albir_cover.jpg';
+    if (track.id === '45-5') return '/catalog/voyager_cover.jpg';
     return '';
   };
 
@@ -452,6 +453,9 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
     }
     if (track.id === 'tape-3') {
       return '/catalog/geometria_variable_tape.png';
+    }
+    if (track.id === '45-5') {
+      return '/catalog/voyager_record.png';
     }
     return '';
   };
