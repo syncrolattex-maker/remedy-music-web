@@ -169,8 +169,8 @@ export const Home = () => {
             <h2 className="font-heading font-black text-6xl md:text-8xl leading-none tracking-tighter mb-8">
               THE<br/>SOUND<br/>LAB.
             </h2>
-            <p className="font-display text-xl font-bold max-w-md border-l-4 border-black pl-4">
-              Sampling Culture: Analog gear, classic breaks, and that raw underground essence. We cut out the noise and leave the groove intact.
+            <p className="font-display text-2xl md:text-3xl font-bold max-w-md border-l-4 border-black pl-4 uppercase tracking-wider">
+              Sampling Culture.
             </p>
           </div>
 
