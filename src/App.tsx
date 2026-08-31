@@ -16,6 +16,7 @@ import { Player } from './components/Player';
 import { Bios } from './pages/Bios';
 import { Pressing } from './pages/Pressing';
 import { Terms } from './pages/Terms';
+import { AdminOrders } from './pages/AdminOrders';
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
 
@@ -115,6 +116,8 @@ export default function App() {
             <Route path="/pressing" element={<Pressing />} />
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/terms" element={<Terms />} />
+            <Route path="/admin" element={<AdminOrders />} />
+            <Route path="/admin/pedidos" element={<AdminOrders />} />
             <Route 
               path="/catalogo" 
               element={

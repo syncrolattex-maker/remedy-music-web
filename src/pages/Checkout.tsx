@@ -117,6 +117,47 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
     }
   };
 
+  // Helper to persist completed orders in registry
+  const saveOrderToRegistry = (
+    txId: string,
+    customerName: string,
+    customerEmail: string,
+    customerPhone: string,
+    shippingAddress: string,
+    shippingCity: string,
+    shippingZip: string,
+    shippingCountry: string,
+    itemTitle: string,
+    itemEdition: string,
+    itemPrice: number
+  ) => {
+    try {
+      const existingStr = localStorage.getItem('remedy_orders_history');
+      const existing = existingStr ? JSON.parse(existingStr) : [];
+      if (!existing.some((o: any) => o.id === txId)) {
+        const newOrder = {
+          id: txId,
+          date: new Date().toISOString(),
+          customerName,
+          customerEmail,
+          customerPhone,
+          shippingAddress,
+          shippingCity,
+          shippingZip,
+          shippingCountry,
+          itemTitle,
+          itemEdition,
+          itemPrice,
+          status: 'Pendiente'
+        };
+        existing.unshift(newOrder);
+        localStorage.setItem('remedy_orders_history', JSON.stringify(existing));
+      }
+    } catch (e) {
+      console.error('Error saving order to registry:', e);
+    }
+  };
+
   // Recover session after PayPal redirect
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -161,6 +202,21 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
               storedCountry || '',
               parsedItem.track.price,
               txVal
+            );
+
+            // Record order in local registry for owner dashboard & CSV export
+            saveOrderToRegistry(
+              txVal,
+              storedName || '',
+              storedEmail || '',
+              storedPhone || '',
+              storedAddress || '',
+              storedCity || '',
+              storedPostalCode || '',
+              storedCountry || '',
+              parsedItem.track.title,
+              parsedItem.edition,
+              parsedItem.track.price
             );
           }
           
