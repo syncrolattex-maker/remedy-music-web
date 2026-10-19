@@ -16,7 +16,7 @@ import { Player } from './components/Player';
 import { Bios } from './pages/Bios';
 import { Pressing } from './pages/Pressing';
 import { Terms } from './pages/Terms';
-import { AdminOrders } from './pages/AdminOrders';
+import { Admin } from './pages/Admin';
 import { SmoothScroll } from './components/SmoothScroll';
 import { CustomCursor } from './components/CustomCursor';
 
@@ -100,7 +100,7 @@ export default function App() {
     setIsPlaying(!isPlaying);
   };
 
-  const isDarkPage = location.pathname === '/' || location.pathname === '/home' || location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing' || location.pathname === '/terms';
+  const isDarkPage = location.pathname === '/' || location.pathname === '/home' || location.pathname.startsWith('/catalogo') || location.pathname === '/contacto' || location.pathname === '/bios' || location.pathname === '/pressing' || location.pathname === '/terms' || location.pathname.startsWith('/admin');
 
   return (
     <SmoothScroll>
@@ -116,8 +116,8 @@ export default function App() {
             <Route path="/pressing" element={<Pressing />} />
             <Route path="/shipping" element={<Shipping />} />
             <Route path="/terms" element={<Terms />} />
-            <Route path="/admin" element={<AdminOrders />} />
-            <Route path="/admin/pedidos" element={<AdminOrders />} />
+            <Route path="/admin" element={<Admin />} />
+            <Route path="/admin/pedidos" element={<Admin />} />
             <Route 
               path="/catalogo" 
               element={

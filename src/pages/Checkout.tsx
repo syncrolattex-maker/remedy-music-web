@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { MapPin, Truck, Phone, Mail, User, CheckCircle, CreditCard, ArrowLeft } from 'lucide-react';
 import { Track } from '../App';
+import { saveOrder } from '../lib/supabase';
 
 interface CheckoutProps {
   checkoutItem: { track: Track; edition: string } | null;
@@ -222,6 +223,27 @@ export const Checkout: React.FC<CheckoutProps> = ({ checkoutItem, onClearCheckou
           
           // Clear cart in parent state
           onClearCheckout();
+
+          // Save order to Supabase
+          const alreadySaved = sessionStorage.getItem('remedy_order_saved_db');
+          if (!alreadySaved) {
+            saveOrder({
+              transaction_id: txVal,
+              customer_name: storedName || 'Cliente Remedy',
+              customer_email: storedEmail || 'cliente@remedymusic.com',
+              customer_phone: storedPhone || '',
+              shipping_address: storedAddress || '',
+              shipping_city: storedCity || '',
+              shipping_postal_code: storedPostalCode || '',
+              shipping_country: storedCountry || 'España',
+              item_title: parsedItem.track.title,
+              item_format: parsedItem.track.format,
+              item_edition: parsedItem.edition || 'Standard',
+              item_price: parsedItem.track.price,
+              status: 'Pagado'
+            });
+            sessionStorage.setItem('remedy_order_saved_db', 'true');
+          }
         }
       } catch (e) {
         console.error('Error recovering checkout session:', e);
