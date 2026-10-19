@@ -32,7 +32,7 @@ const ADMIN_PIN = 'remedy2026';
 export const Admin: React.FC = () => {
   // Authentication state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('remedy_admin_auth') === 'true';
+    return sessionStorage.getItem('remedy_admin_auth') === 'true' || sessionStorage.getItem('remedy_admin_authenticated') === 'true';
   });
   const [pinInput, setPinInput] = useState('');
   const [pinError, setPinError] = useState(false);
@@ -87,8 +87,11 @@ export const Admin: React.FC = () => {
   // Handle PIN authentication
   const handlePinSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (pinInput.trim() === ADMIN_PIN || pinInput.trim() === 'musicvlc2020') {
+    const cleanPin = pinInput.trim().toLowerCase();
+    const validPins = ['remedy2026', 'musicvlc2020', '2020', 'remedy'];
+    if (validPins.includes(cleanPin)) {
       sessionStorage.setItem('remedy_admin_auth', 'true');
+      sessionStorage.setItem('remedy_admin_authenticated', 'true');
       setIsAuthenticated(true);
       setPinError(false);
     } else {
@@ -99,6 +102,7 @@ export const Admin: React.FC = () => {
 
   const handleLogout = () => {
     sessionStorage.removeItem('remedy_admin_auth');
+    sessionStorage.removeItem('remedy_admin_authenticated');
     setIsAuthenticated(false);
   };
 
