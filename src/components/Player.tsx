@@ -98,7 +98,16 @@ export const Player = ({ currentTrack, isPlaying, onTogglePlay, onClose, audioRe
             <span className="font-mono text-[10px] text-zinc-800 uppercase tracking-widest leading-none truncate">
               {currentTrack.artist} // {currentTrack.format.toUpperCase()}
             </span>
-            {currentTrack.bandcampUrl && (
+            {currentTrack.spotifyUrl ? (
+              <a
+                href={currentTrack.spotifyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-mono text-[9px] font-bold bg-[#1DB954] text-black hover:bg-[#1ed760] px-1.5 py-0.5 border border-black rounded-xs transition-colors flex items-center shrink-0 select-none gap-0.5"
+              >
+                SPOTIFY ↗
+              </a>
+            ) : currentTrack.bandcampUrl && (
               <a
                 href={currentTrack.bandcampUrl}
                 target="_blank"

@@ -78,7 +78,8 @@ const catalogData: Track[] = [
     title: 'Voyager EP',
     artist: 'Freedust',
     format: 'vinyl',
-    audioUrl: '/catalog/voyager_preview.mp3',
+    audioUrl: 'https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview221/v4/24/b3/d6/24b3d6e5-d588-5838-b1ad-2d122ee9708a/mzaf_8074257172293222049.plus.aac.p.m4a',
+    spotifyUrl: 'https://open.spotify.com/album/3QbD82POwmqPyiHYoOb8D9?si=GuVy9_-gTAqLyVyEdo1EIg',
     bandcampUrl: 'https://remedymusicvlc.bandcamp.com/album/preorder-freedust-voyager-ep',
     price: 12.50,
     color: '#E6FFFA', // pastel mint
@@ -747,7 +748,19 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ track, currentTrack, isPlaying, o
 
       {/* ACTION BUTTONS */}
       <div className="flex flex-col gap-2 mt-4">
-        {track.bandcampUrl && (
+        {track.spotifyUrl ? (
+          <a
+            href={track.spotifyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-2 px-4 bg-[#1DB954] hover:bg-[#1ed760] text-black font-black border-3 border-black font-mono text-xs uppercase tracking-wider flex items-center justify-center gap-2 shadow-[4px_4px_0px_0px_#000] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all text-center select-none cursor-pointer"
+          >
+            <svg className="w-4 h-4 fill-current shrink-0" viewBox="0 0 24 24">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.498 17.306c-.215.352-.676.463-1.028.248-2.817-1.722-6.363-2.111-10.541-1.157-.402.092-.801-.16-.893-.562-.092-.403.16-.802.562-.894 4.571-1.044 8.487-.599 11.652 1.337.352.215.463.676.248 1.028zm1.468-3.262c-.27.441-.849.58-1.29.31-3.225-1.982-8.14-2.557-11.954-1.399-.499.151-1.03-.134-1.181-.633-.151-.499.134-1.03.633-1.181 4.364-1.324 9.787-.68 13.482 1.591.441.27.58.849.31 1.29zm.126-3.41c-3.868-2.297-10.248-2.509-13.942-1.387-.593.18-1.222-.162-1.402-.755-.18-.593.162-1.222.755-1.402 4.244-1.288 11.285-1.038 15.726 1.598.533.316.708 1.011.392 1.544-.316.533-1.011.708-1.544.392z"/>
+            </svg>
+            Listen on Spotify
+          </a>
+        ) : track.bandcampUrl && (
           <a
             href={track.bandcampUrl}
             target="_blank"
