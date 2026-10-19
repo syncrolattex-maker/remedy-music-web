@@ -28,71 +28,17 @@ export interface Order {
   created_at: string;
 }
 
-const SEED_ORDERS: Order[] = [
-  {
-    id: 'ord-seed-01',
-    transaction_id: 'PAYID-PP-8X92K11',
-    customer_name: 'Marc Benavent',
-    customer_email: 'mbenavent@gmail.com',
-    customer_phone: '+34 612 345 678',
-    shipping_address: 'Carrer de la Pau 14, 2ºB',
-    shipping_city: 'Valencia',
-    shipping_postal_code: '46003',
-    shipping_country: 'España',
-    item_title: 'Nuevos Capitales EP',
-    item_format: 'vinyl',
-    item_edition: 'Vinyl 7" Single',
-    item_price: 14.50,
-    status: 'Pagado',
-    created_at: new Date(Date.now() - 3600000 * 5).toISOString()
-  },
-  {
-    id: 'ord-seed-02',
-    transaction_id: 'PAYID-PP-4M77L90',
-    customer_name: 'Laura Morales',
-    customer_email: 'laura.mora@hotmail.com',
-    customer_phone: '+34 654 987 321',
-    shipping_address: 'Calle Gran Vía 45, 4ºA',
-    shipping_city: 'Madrid',
-    shipping_postal_code: '28013',
-    shipping_country: 'España',
-    item_title: 'We can fly',
-    item_format: 'vinyl',
-    item_edition: 'Vinyl 7" Single',
-    item_price: 12.50,
-    status: 'Enviado',
-    created_at: new Date(Date.now() - 3600000 * 24).toISOString()
-  },
-  {
-    id: 'ord-seed-03',
-    transaction_id: 'PAYID-PP-9K23Z55',
-    customer_name: 'Carlos Soler',
-    customer_email: 'csoler@outlook.es',
-    customer_phone: '+34 688 112 233',
-    shipping_address: 'Avenida de Francia 22, 5º',
-    shipping_city: 'Valencia',
-    shipping_postal_code: '46023',
-    shipping_country: 'España',
-    item_title: 'Raw Tape Series Vol. 1',
-    item_format: 'cassette',
-    item_edition: 'Cassette C-60 Limited',
-    item_price: 9.99,
-    status: 'Pagado',
-    created_at: new Date(Date.now() - 3600000 * 48).toISOString()
-  }
-];
-
 function getLocalOrders(): Order[] {
   try {
     const raw = localStorage.getItem('remedy_cloud_orders');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed)) return parsed;
     }
   } catch (e) {
     console.error('Error reading local orders:', e);
   }
-  return SEED_ORDERS;
+  return [];
 }
 
 function saveLocalOrders(orders: Order[]) {
@@ -122,12 +68,11 @@ export async function saveOrder(order: Omit<Order, 'id' | 'created_at' | 'status
     created_at: new Date().toISOString()
   };
 
-  // Always mirror in localStorage for resilient offline availability
+  // Mirror in localStorage
   const currentLocal = getLocalOrders();
   saveLocalOrders([localOrder, ...currentLocal]);
 
   try {
-    // Attempt saving to Supabase with a 3.5s timeout promise race
     const timeoutPromise = new Promise<{ error: any }>((_, reject) =>
       setTimeout(() => reject(new Error('Supabase timeout')), 3500)
     );
@@ -177,8 +122,7 @@ export async function fetchOrders(): Promise<{ orders: Order[]; error: any }> {
       .order('created_at', { ascending: false });
 
     const result: any = await Promise.race([queryPromise, timeoutPromise]);
-    if (result?.data && Array.isArray(result.data) && result.data.length > 0) {
-      // Sync to local cache
+    if (result?.data && Array.isArray(result.data)) {
       saveLocalOrders(result.data as Order[]);
       return { orders: result.data as Order[], error: null };
     }
@@ -186,13 +130,12 @@ export async function fetchOrders(): Promise<{ orders: Order[]; error: any }> {
     console.warn('Could not reach Supabase database; using local store:', err);
   }
 
-  // Graceful fallback to persistent storage / seed
+  // Graceful fallback to persistent storage
   const fallback = getLocalOrders();
   return { orders: fallback, error: null };
 }
 
 export async function updateOrderStatus(id: string, status: string) {
-  // Update local store immediately
   const localList = getLocalOrders();
   const updated = localList.map(o => o.id === id ? { ...o, status } : o);
   saveLocalOrders(updated);
@@ -212,6 +155,30 @@ export async function updateOrderStatus(id: string, status: string) {
     return true;
   } catch (err) {
     console.warn('Could not update status on Supabase; updated locally:', err);
+    return true;
+  }
+}
+
+export async function deleteOrder(id: string) {
+  const localList = getLocalOrders();
+  const updated = localList.filter(o => o.id !== id);
+  saveLocalOrders(updated);
+
+  try {
+    const timeoutPromise = new Promise<boolean>((_, reject) =>
+      setTimeout(() => reject(new Error('Delete timeout')), 3000)
+    );
+
+    const deletePromise = supabase
+      .from('orders')
+      .delete()
+      .eq('id', id)
+      .then(res => !res.error);
+
+    await Promise.race([deletePromise, timeoutPromise]);
+    return true;
+  } catch (err) {
+    console.warn('Could not delete from Supabase; deleted locally:', err);
     return true;
   }
 }

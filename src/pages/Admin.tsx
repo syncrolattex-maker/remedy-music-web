@@ -22,9 +22,10 @@ import {
   Plus, 
   X, 
   ExternalLink,
-  ChevronDown
+  ChevronDown,
+  Trash2
 } from 'lucide-react';
-import { Order, fetchOrders, updateOrderStatus, saveOrder } from '../lib/supabase';
+import { Order, fetchOrders, updateOrderStatus, saveOrder, deleteOrder } from '../lib/supabase';
 
 // Default PIN for dashboard access
 const ADMIN_PIN = 'remedy2026';
@@ -111,6 +112,14 @@ export const Admin: React.FC = () => {
     // Optimistic UI update
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
     await updateOrderStatus(orderId, newStatus);
+  };
+
+  // Handle order deletion
+  const handleDeleteOrder = async (orderId: string, customerName: string) => {
+    if (window.confirm(`¿Seguro que deseas eliminar el pedido de ${customerName}?`)) {
+      setOrders(prev => prev.filter(o => o.id !== orderId));
+      await deleteOrder(orderId);
+    }
   };
 
   // Handle manual order creation
@@ -579,8 +588,10 @@ export const Admin: React.FC = () => {
               <span>Conectando con Supabase y cargando pedidos...</span>
             </div>
           ) : filteredOrders.length === 0 ? (
-            <div className="py-16 text-center font-mono text-sm text-zinc-500">
-              No se han encontrado pedidos que coincidan con la búsqueda.
+            <div className="py-16 text-center font-mono text-xs text-zinc-500 flex flex-col items-center gap-2">
+              <Package className="w-8 h-8 text-zinc-600 stroke-[1.5]" />
+              <span className="text-zinc-400 font-bold uppercase tracking-wider">No hay pedidos registrados todavía</span>
+              <span className="text-zinc-600 max-w-sm">Cada vez que un cliente complete un pago en PayPal o añadas una venta manual, se registrará aquí en tiempo real.</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
@@ -685,26 +696,35 @@ export const Admin: React.FC = () => {
                           {Number(order.item_price).toFixed(2)} €
                         </td>
 
-                        {/* Status selector */}
+                        {/* Status selector & Delete */}
                         <td className="p-3.5 whitespace-nowrap">
-                          <select
-                            value={order.status}
-                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                            className={`px-2.5 py-1.5 font-mono text-xs font-bold uppercase border-2 focus:outline-none cursor-pointer ${
-                              order.status === 'Pagado'
-                                ? 'bg-yellow-950/80 text-yellow-300 border-yellow-500'
-                                : order.status === 'Enviado'
-                                ? 'bg-blue-950/80 text-blue-300 border-blue-500'
-                                : order.status === 'Entregado'
-                                ? 'bg-green-950/80 text-green-300 border-green-500'
-                                : 'bg-zinc-800 text-zinc-400 border-zinc-600'
-                            }`}
-                          >
-                            <option value="Pagado">🟡 Pagado (Preparar)</option>
-                            <option value="Enviado">🔵 Enviado</option>
-                            <option value="Entregado">🟢 Entregado</option>
-                            <option value="Cancelado">🔴 Cancelado</option>
-                          </select>
+                          <div className="flex items-center gap-2">
+                            <select
+                              value={order.status}
+                              onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                              className={`px-2.5 py-1.5 font-mono text-xs font-bold uppercase border-2 focus:outline-none cursor-pointer ${
+                                order.status === 'Pagado'
+                                  ? 'bg-yellow-950/80 text-yellow-300 border-yellow-500'
+                                  : order.status === 'Enviado'
+                                  ? 'bg-blue-950/80 text-blue-300 border-blue-500'
+                                  : order.status === 'Entregado'
+                                  ? 'bg-green-950/80 text-green-300 border-green-500'
+                                  : 'bg-zinc-800 text-zinc-400 border-zinc-600'
+                              }`}
+                            >
+                              <option value="Pagado">🟡 Pagado (Preparar)</option>
+                              <option value="Enviado">🔵 Enviado</option>
+                              <option value="Entregado">🟢 Entregado</option>
+                              <option value="Cancelado">🔴 Cancelado</option>
+                            </select>
+                            <button
+                              onClick={() => handleDeleteOrder(order.id, order.customer_name)}
+                              title="Eliminar registro"
+                              className="p-1.5 text-zinc-500 hover:text-[#FF0055] hover:bg-zinc-900 border border-transparent hover:border-zinc-700 transition-all cursor-pointer"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </td>
 
                       </tr>

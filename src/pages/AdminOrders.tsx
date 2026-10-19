@@ -18,38 +18,7 @@ export interface RemedyOrder {
   status: 'Pendiente' | 'Enviado';
 }
 
-const DEMO_ORDERS: RemedyOrder[] = [
-  {
-    id: 'PAYID-PP-8X92K11',
-    date: '2026-08-30T14:32:00.000Z',
-    customerName: 'Marc Benavent',
-    customerEmail: 'mbenavent@gmail.com',
-    customerPhone: '+34 612 345 678',
-    shippingAddress: 'Carrer de la Pau 14, 2ºB',
-    shippingCity: 'Valencia',
-    shippingZip: '46003',
-    shippingCountry: 'España',
-    itemTitle: 'Nuevos Capitales EP',
-    itemEdition: 'Vinyl 7" Single',
-    itemPrice: 14.50,
-    status: 'Pendiente'
-  },
-  {
-    id: 'PAYID-PP-4M77L90',
-    date: '2026-08-28T19:15:00.000Z',
-    customerName: 'Laura Morales',
-    customerEmail: 'laura.mora@hotmail.com',
-    customerPhone: '+34 654 987 321',
-    shippingAddress: 'Calle Gran Vía 45, 4ºA',
-    shippingCity: 'Madrid',
-    shippingZip: '28013',
-    shippingCountry: 'España',
-    itemTitle: 'We can fly',
-    itemEdition: 'Vinyl 7" Single',
-    itemPrice: 12.50,
-    status: 'Enviado'
-  }
-];
+const DEMO_ORDERS: RemedyOrder[] = [];
 
 export const AdminOrders: React.FC = () => {
   const [pin, setPin] = useState('');
