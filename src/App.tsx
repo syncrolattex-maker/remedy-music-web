@@ -18,7 +18,6 @@ import { Pressing } from './pages/Pressing';
 import { Terms } from './pages/Terms';
 import { Admin } from './pages/Admin';
 import { SmoothScroll } from './components/SmoothScroll';
-import { CustomCursor } from './components/CustomCursor';
 
 export interface Track {
   id: string;
@@ -104,7 +103,6 @@ export default function App() {
 
   return (
     <SmoothScroll>
-      <CustomCursor />
       <div className={`min-h-screen flex flex-col font-sans relative ${isDarkPage ? 'bg-[#0a0a0a]' : 'bg-surface'}`}>
         <Header />
         <div className="flex-grow">

@@ -179,10 +179,3 @@
 }
 
 
-body {
-  cursor: none !important;
-}
-
-button, a, input, select, textarea {
-  cursor: none !important;
-}
